@@ -1,60 +1,21 @@
-import React from 'react'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { Text, View, StyleSheet,TouchableOpacity,TextInput } from 'react-native'
-import {useRouter} from 'expo-router'
+import React from "react";
+import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import TouchButton from "../components/ui/TouchButton";
+import "../global.css";
 
-const home = () => {
+const Home = () => {
   const router = useRouter();
-      const replacePath = (path: any) => {
-        router.replace(path);
-      }  
+
+  const replacePath = (path: any): void => {
+    router.replace(path);
+  };
+
   return (
-    <View>
-      <TouchableOpacity>
-      <Text style={styles.button} onPress={() => {replacePath('welcome')}}>Voltar</Text>
-      </TouchableOpacity>
+    <View className="flex-1 justify-center items-center">
+      <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
     </View>
-  )
-}
+  );
+};
 
-
-const styles = StyleSheet.create({
-  container:{
-    flex: 1,
-    justifyContent:'center',
-    alignItems: 'center'
-  },
-  formContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.00)',
-    padding: 20,
-    borderRadius: 5,
-    alignItems: 'center'
-  },
-  button:{
-    color: '#fff',
-    backgroundColor: '#4CAF50',
-    width: 300,
-    textAlign: 'center',
-    padding: 10,
-    margin: 5,
-    borderRadius: 8,
-    fontSize: 24
-  },
-  text: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 10
-  },
-  form:{ 
-    fontSize: 24,  
-    color: "#4CAF50",
-    borderWidth: 2,
-    borderColor: '#4CAF50',
-    borderRadius: 10,
-    width: 300,
-    padding: 10,
-    margin: 5,
-  }
-})
-
-export default home
+export default Home;

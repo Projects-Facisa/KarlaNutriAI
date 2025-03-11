@@ -25,9 +25,6 @@ const Welcome = () => {
         <Text className="text-4xl font-bold">Bem-vindo ao </Text>
         <Text className="text-2xl m-[15]">KarlaNutriAI</Text>
 
-        <InputField placeholder="Email" />
-        <InputField placeholder="Senha" secureTextEntry={true} />
-
         <TouchButton onPress={() => replacePath("login")} text="Logar" />
         <TouchButton
           onPress={() => replacePath("register")}

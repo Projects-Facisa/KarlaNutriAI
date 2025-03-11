@@ -4,6 +4,7 @@ import { Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import InputField from "../components/ui/InputField";
 import TouchButton from "../components/ui/TouchButton";
+import "../global.css";
 
 const Login = () => {
   const router = useRouter();

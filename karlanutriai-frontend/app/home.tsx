@@ -14,6 +14,11 @@ const Home = () => {
   return (
     <View className="flex-1 justify-center items-center">
       <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
+      <TouchButton
+        onPress={() => replacePath("(tabs)/suporte")}
+        text="Suporte"
+      />
+      <TouchButton onPress={() => replacePath("(tabs)/card")} text="Card" />
     </View>
   );
 };

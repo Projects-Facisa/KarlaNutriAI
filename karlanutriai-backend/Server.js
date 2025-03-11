@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
 import {config} from "dotenv";
-import connectDB from "./Database.ts";
+import connectDB from "./Database.js";
 import cookieParser from "cookie-parser";
 
 config();
 
 const app = express();
-const portApi: number = Number(process.env.PORT) || 5000; // Definindo o tipo como number
+const portApi= process.env.PORT || 5000;
 
 app.use(
     cors({

@@ -35,7 +35,7 @@ const Home = () => {
                 color="#4CAF50"
               />
             ),
-            onPress: () => replacePath("home"),
+            onPress: () => replacePath("(tabs)/chat"),
           },
           {
             id: 3,

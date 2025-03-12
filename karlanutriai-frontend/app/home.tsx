@@ -57,7 +57,19 @@ const Home = () => {
                 color="#4CAF50"
               />
             ),
-            onPress: () => replacePath("home"),
+            onPress: () => replacePath("(tabs)/userCard"),
+          },
+
+          {
+            id: 5,
+            icon: (
+              <MaterialCommunityIcons
+                name="account"
+                size={30}
+                color="#4CAF50"
+              />
+            ),
+            onPress: () => replacePath("(tabs)/support"),
           },
         ]}
         activeItem={1}

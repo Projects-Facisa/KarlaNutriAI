@@ -3,6 +3,7 @@ import cors from "cors";
 import {config} from "dotenv";
 import connectDB from "./Database.js";
 import cookieParser from "cookie-parser";
+import routes from "./routes.js"
 
 config();
 
@@ -18,6 +19,8 @@ app.use(
 app.use(cookieParser());
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ limit: "20mb", extended: true }));
+
+app.use(routes) //utiliza o arquivo de rotas que unifica tudo
 
 connectDB();
 

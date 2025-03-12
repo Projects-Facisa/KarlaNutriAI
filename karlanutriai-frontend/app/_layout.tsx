@@ -38,6 +38,8 @@ export default function RootLayout() {
       <Stack.Screen name="register" options={{ headerShown: false }} />
       <Stack.Screen name="home" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)/support" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)/userCard" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)/chat" options={{ headerShown: false }} />
     </Stack>
   );

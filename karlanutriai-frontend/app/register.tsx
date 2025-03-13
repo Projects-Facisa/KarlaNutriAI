@@ -17,15 +17,17 @@ const Register = () => {
     router.replace(path);
   };
   return (
-    <View className="flex-1 justify-center align-center">
+    <View className="flex-1 justify-center align-center bg-[#313338]">
       <View className="bg-[rgba(0, 0, 0, 0.00)] p-[20px] rounded-lg items-center">
         <MaterialCommunityIcons
           name="food-apple-outline"
           size={100}
-          color="#4CAF50"
+          color="#c33c41"
           margin={5}
         />
-        <Text className="text-5xl font-bold mb-[10]">Registrar-se</Text>
+        <Text className="text-5xl font-bold mb-[10] text-[#F5F5F5]">
+          Registrar-se
+        </Text>
         <InputField
           placeholder="Nome Completo"
           value={nome}

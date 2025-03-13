@@ -26,28 +26,32 @@ const Support = () => {
     replacePath("home");
   };
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="flex-1 justify-center items-center  bg-[#313338]">
       <View className="flex-1 p-4 ">
-        <Text className="text-2xl text-center font-bold mb-4">Suporte</Text>
-        <Text className="mb-1 text-center">Tipo de Problema</Text>
+        <Text className="text-2xl text-center font-bold mb-4 text-[#F5F5F5]">
+          Suporte
+        </Text>
+        <Text className="text-center text-[#F5F5F5] mb-4">
+          Tipo de Problema
+        </Text>
         <View className="flex-row mb-4">
           <TouchableOpacity
             onPress={() => setTipoProblema("aplicativo")}
-            className={`flex-1 p-3 border rounded-md mr-2 ${
+            className={`flex-1 p-3 border rounded-md mr-2 text-[#F5F5F5] ${
               tipoProblema === "aplicativo"
-                ? "border-green-500"
-                : "border-gray-300"
+                ? "border-[#F5F5F5]"
+                : "border-[#1e1f22]"
             }`}
           >
-            <Text className="text-center">Aplicativo</Text>
+            <Text className="text-center text-[#F5F5F5]">Aplicativo</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setTipoProblema("conta")}
             className={`flex-1 p-3 border rounded-md ${
-              tipoProblema === "conta" ? "border-green-500" : "border-gray-300"
+              tipoProblema === "conta" ? "border-[#F5F5F5]" : "border-[#1e1f22]"
             }`}
           >
-            <Text className="text-center">Conta</Text>
+            <Text className="text-center text-[#F5F5F5]">Conta</Text>
           </TouchableOpacity>
         </View>
         <InputField
@@ -64,7 +68,7 @@ const Support = () => {
           {
             id: 1,
             icon: (
-              <MaterialCommunityIcons name="home" size={30} color="#4CAF50" />
+              <MaterialCommunityIcons name="home" size={30} color="#5d6af0" />
             ),
             onPress: () => replacePath("home"),
           },
@@ -74,10 +78,10 @@ const Support = () => {
               <MaterialCommunityIcons
                 name="chat-processing"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
-            onPress: () => replacePath("home"),
+            onPress: () => replacePath("(tabs)/chat"),
           },
           {
             id: 3,
@@ -85,7 +89,7 @@ const Support = () => {
               <MaterialCommunityIcons
                 name="food-fork-drink"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("home"),
@@ -96,7 +100,7 @@ const Support = () => {
               <MaterialCommunityIcons
                 name="account"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("(tabs)/userCard"),
@@ -107,7 +111,7 @@ const Support = () => {
               <MaterialCommunityIcons
                 name="account"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("(tabs)/support"),

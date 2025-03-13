@@ -23,33 +23,33 @@ const chat = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1">
       <StatusBar barStyle="dark-content" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1 bg-white p-4"
+        className="flex-1 bg-[#313338] p-4"
       >
         <FlatList
           data={messages}
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item }) => (
-            <View className="self-end bg-[#4A90E2] rounded-xl p-3 mb-2 max-w-[75%]">
+            <View className="self-end bg-[#5d6af0] rounded-xl p-3 mb-2 max-w-[75%]">
               <Text className="text-white text-lg">{item}</Text>
             </View>
           )}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         />
-        <View className="flex-row items-center border-t border-gray-300 p-1">
+        <View className="flex-row items-center border-t border-[#1e1f22] pt-2">
           <TextInput
-            className="flex-1 border border-gray-400 rounded-lg px-3 py-2"
+            className="flex-1 border text-[#F5F5F5] border-[#1e1f22] rounded-lg px-3 py-2"
             placeholder="Digite sua mensagem..."
-            placeholderTextColor={"#9AA6B2"}
+            placeholderTextColor={"#F5F5F5"}
             value={message}
             onChangeText={setMessage}
           />
           <TouchableOpacity
-            className="bg-[#4CAF50] px-4 py-2 ml-2 rounded-lg"
+            className="bg-[#1e1f22] px-4 py-2 ml-2 rounded-lg"
             onPress={sendMessage}
           >
             <Text className="text-white font-bold">Enviar</Text>

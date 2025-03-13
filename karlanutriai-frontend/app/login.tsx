@@ -14,15 +14,17 @@ const Login = () => {
     router.replace(path);
   };
   return (
-    <View className="flex-1 justify-center align-center">
+    <View className="flex-1 justify-center align-center bg-[#313338]">
       <View className="bg-[rgba(0, 0, 0, 0.00)] p-[20px] rounded-lg items-center">
         <MaterialCommunityIcons
           name="food-apple-outline"
           size={100}
-          color="#4CAF50"
+          color="#c33c41"
           margin={5}
         />
-        <Text className="text-4xl font-bold mb-[10px]">Entrar agora</Text>
+        <Text className="text-4xl font-bold mb-[10px] text-[#FFFFFF]">
+          Entrar
+        </Text>
         <InputField
           placeholder="E-mail"
           value={email}

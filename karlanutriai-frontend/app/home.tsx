@@ -5,7 +5,6 @@ import TouchButton from "../components/ui/TouchButton";
 import "../global.css";
 import BottomNavigation from "../components/ui/BottomNavigation";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 
 const Home = () => {
   const router = useRouter();
@@ -15,14 +14,14 @@ const Home = () => {
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="flex-1 justify-center items-center bg-[#313338]">
       <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
       <BottomNavigation
         items={[
           {
             id: 1,
             icon: (
-              <MaterialCommunityIcons name="home" size={30} color="#4CAF50" />
+              <MaterialCommunityIcons name="home" size={30} color="#5d6af0" />
             ),
             onPress: () => replacePath("home"),
           },
@@ -32,7 +31,7 @@ const Home = () => {
               <MaterialCommunityIcons
                 name="chat-processing"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("(tabs)/chat"),
@@ -43,7 +42,7 @@ const Home = () => {
               <MaterialCommunityIcons
                 name="food-fork-drink"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("home"),
@@ -54,7 +53,7 @@ const Home = () => {
               <MaterialCommunityIcons
                 name="account"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("(tabs)/userCard"),
@@ -66,7 +65,7 @@ const Home = () => {
               <MaterialCommunityIcons
                 name="account"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("(tabs)/support"),

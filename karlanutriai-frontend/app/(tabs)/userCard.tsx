@@ -50,7 +50,7 @@ const UserCard = () => {
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="flex-1 justify-center items-center bg-[#313338]">
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         className="flex-1 w-full"
@@ -85,7 +85,7 @@ const UserCard = () => {
                 onChangeText={setTelefone}
               />
               <TouchableOpacity onPress={handleSaveProfile}>
-                <Text className="text-white bg-[#4CAF50] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
+                <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
                   Salvar Perfil
                 </Text>
               </TouchableOpacity>
@@ -99,31 +99,37 @@ const UserCard = () => {
           </View>
         ) : (
           <View className="items-center px-4">
-            <Text className="text-2xl font-bold mb-4 self-center">Perfil</Text>
+            <Text className="text-2xl font-bold mb-4 self-center text-[#F5F5F5]">
+              Perfil
+            </Text>
             <View className="w-full max-w-[300px]">
-              <Text className="text-2xl border border-[#4CAF50] rounded-lg w-[300] p-2 my-1">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
                 {nome || "Nome"}
               </Text>
-              <Text className="text-2xl border border-[#4CAF50] rounded-lg w-[300] p-2 my-1">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
                 {email || "email@exemplo.com"}
               </Text>
-              <Text className="text-2xl border border-[#4CAF50] rounded-lg w-[300] p-2 my-1">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
                 {senha ? "••••••" : "Senha"}
               </Text>
-              <Text className="text-2xl border border-[#4CAF50] rounded-lg w-[300] p-2 my-1">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
                 {telefone || "(XX) XXXXX-XXXX"}
               </Text>
               <TouchableOpacity onPress={() => setIsEditing(true)}>
-                <Text className="text-white bg-[#4CAF50] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
+                <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
                   Editar Perfil
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
-                className="border border-[#4CAF50] rounded-md p-4 my-1 w-full items-center"
+                className="border border-[#1e1f22] rounded-md p-4 my-1 w-full items-center"
               >
-                <Text className="text-xl font-bold mb-2">Dados do Card</Text>
-                <Text>Toque para ver/editar os dados do seu card</Text>
+                <Text className="text-xl font-bold mb-2 text-[#F5F5F5]">
+                  Dados do Card
+                </Text>
+                <Text className="text-[#F5F5F5]">
+                  Toque para ver/editar os dados do seu card
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -135,14 +141,16 @@ const UserCard = () => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View className="flex-1 justify-center items-center bg-white">
+        <View className="flex-1 justify-center items-center bg-[#313338]">
           <ScrollView
             contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
             className="flex-1 w-full"
           >
             <View className="items-center px-4">
-              <Text className="text-2xl font-bold mb-4">Dados do Card</Text>
-              <Text className="text-lg text-center mb-4 w-[300]">
+              <Text className="text-2xl font-bold mb-4 text-[#F5F5F5]">
+                Dados do Card
+              </Text>
+              <Text className="text-lg text-center mb-4 w-[300] text-[#F5F5F5]">
                 Preencha levando em consideração seu tipo de corpo
               </Text>
               <View className="w-full max-w-[300px]">
@@ -190,13 +198,13 @@ const UserCard = () => {
                     onPress={() => setDropdownVisible(!dropdownVisible)}
                     className="flex-row justify-between items-center"
                   >
-                    <Text className="text-2xl text-[#4CAF50] border border-[#4CAF50] rounded-lg w-[300] p-2 my-1">
+                    <Text className="text-2xl text-[#F5F5F5] border border-[#1e1f22] rounded-lg w-[300] p-2 my-1">
                       {meta || "O que planeja?"}
                     </Text>
                     <MaterialCommunityIcons
                       name={dropdownVisible ? "chevron-up" : "chevron-down"}
                       size={20}
-                      color="#4CAF50"
+                      color="#F5F5F5"
                     />
                   </TouchableOpacity>
                   {dropdownVisible && (
@@ -215,12 +223,12 @@ const UserCard = () => {
                             setDropdownVisible(false);
                           }}
                           className={`p-3 border-b last:border-b-0 ${
-                            meta === option ? "bg-[#4CAF50]" : "bg-white"
+                            meta === option ? "bg-[#1e1f22]" : ""
                           }`}
                         >
                           <Text
                             className={
-                              meta === option ? "text-white" : "text-black"
+                              meta === option ? "text-white" : "text-white"
                             }
                           >
                             {option}
@@ -231,7 +239,7 @@ const UserCard = () => {
                   )}
                 </View>
                 <TouchableOpacity onPress={handleSaveCardData}>
-                  <Text className="text-white bg-[#4CAF50] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
+                  <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
                     Salvar Dados do Card
                   </Text>
                 </TouchableOpacity>
@@ -239,7 +247,7 @@ const UserCard = () => {
                   onPress={() => setModalVisible(false)}
                   className="p-4 items-center"
                 >
-                  <Text>Voltar</Text>
+                  <Text className="text-[#F5F5F5]">Voltar</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -252,7 +260,7 @@ const UserCard = () => {
           {
             id: 1,
             icon: (
-              <MaterialCommunityIcons name="home" size={30} color="#4CAF50" />
+              <MaterialCommunityIcons name="home" size={30} color="#5d6af0" />
             ),
             onPress: () => replacePath("home"),
           },
@@ -262,10 +270,10 @@ const UserCard = () => {
               <MaterialCommunityIcons
                 name="chat-processing"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
-            onPress: () => replacePath("home"),
+            onPress: () => replacePath("(tabs)/chat"),
           },
           {
             id: 3,
@@ -273,7 +281,7 @@ const UserCard = () => {
               <MaterialCommunityIcons
                 name="food-fork-drink"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("home"),
@@ -284,7 +292,7 @@ const UserCard = () => {
               <MaterialCommunityIcons
                 name="account"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("(tabs)/userCard"),
@@ -295,7 +303,7 @@ const UserCard = () => {
               <MaterialCommunityIcons
                 name="account"
                 size={30}
-                color="#4CAF50"
+                color="#5d6af0"
               />
             ),
             onPress: () => replacePath("(tabs)/support"),

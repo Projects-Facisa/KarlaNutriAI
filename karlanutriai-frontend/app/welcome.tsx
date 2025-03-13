@@ -14,16 +14,16 @@ const Welcome = () => {
   };
 
   return (
-    <View className="flex-1 justify-center align-center">
+    <View className="flex-1 justify-center align-center bg-[#313338]">
       <View className="bg-[rgba(0, 0, 0, 0.00)] p-[20] rounded-lg items-center">
         <MaterialCommunityIcons
           name="food-apple-outline"
-          size={200}
-          color="#4CAF50"
+          size={150}
+          color="#c33c41"
           margin={5}
         />
-        <Text className="text-4xl font-bold">Bem-vindo ao </Text>
-        <Text className="text-2xl m-[15]">KarlaNutriAI</Text>
+        <Text className="text-4xl font-bold text-[#F5F5F5]">Bem-vindo ao </Text>
+        <Text className="text-2xl m-[15] text-[#F5F5F5]">KarlaNutriAI</Text>
 
         <TouchButton onPress={() => replacePath("login")} text="Logar" />
         <TouchButton

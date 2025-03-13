@@ -1,42 +1,51 @@
 import mongoose from "mongoose";
 
 const nutritionalDataSchema = new mongoose.Schema({
-    dataNascimento: {
+    birthDate: {
         type: Data,
         required: true,
     },
-    altura: {
+    height: {
         type: Number,
         required: true,
     },
-    peso: {
+    weight: {
         type: Number,
         required: true,
     },
-    alergia: {
+    allergy: {
         type: [String],
         default: ["Sem alergias alimentares"],
     },
-    profissao: {
+    profession: {
         type: String,
         required: false,
     },
-    percentualGordura: {
+    bodyFatPercentage: {
         type: String,
-        enum: [],
+        enum: [
+            'Alto percentual de massa muscular',
+            'Equilíbrio entre massa muscular e gordura',
+            'Alto percentual de gordura corporal',
+            'Não sei'
+        ],
         required: true,
     },
-    taxaMetabolica: {
+    metabolicRate: {
         type: String,
-        enum: [],
+        enum: [
+            'Metabolismo acelerado (perco peso facilmente)',
+            'Metabolismo moderado (peso estável com facilidade)',
+            'Metabolismo mais lento (tenho tendência a ganhar peso)'
+        ],
         required: true,
     },
-    meta: {
+    goal: {
         type: String,
-        enum: [],
+        enum: ['Ganhar peso', 'Perder peso', 'Manter peso'],
         required: true,
     },
-    usuarioId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,

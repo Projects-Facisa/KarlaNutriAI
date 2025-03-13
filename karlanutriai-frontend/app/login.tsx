@@ -8,34 +8,79 @@ import "../global.css";
 
 const Login = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+
+  const [email, setEmail] = useState({ value: "", dirty: false });
+  const [senha, setSenha] = useState({ value: "", dirty: false });
+
   const replacePath = (path: any): void => {
     router.replace(path);
   };
+
+  const regexEmail = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+
+  const handleInputChange = (field: "email" | "senha", value: string) => {
+    if (field === "email") {
+      setEmail((prev) => ({ value, dirty: prev.dirty }));
+    } else {
+      setSenha((prev) => ({ value, dirty: prev.dirty }));
+    }
+  };
+
+  const handleBlur = (field: "email" | "senha") => {
+    if (field === "email") {
+      setEmail((prev) => ({ ...prev, dirty: true }));
+    } else {
+      setSenha((prev) => ({ ...prev, dirty: true }));
+    }
+  };
+
+  const validateField = (
+    data: { value: string; dirty: boolean },
+    type: string
+  ) => {
+    if (!data.value && data.dirty) {
+      return "Campo obrigatório!";
+    } else if (type === "email" && data.dirty && !regexEmail.test(data.value)) {
+      return "E-mail inválido!";
+    }
+    return null;
+  };
+
   return (
-    <View className="flex-1 justify-center align-center bg-[#313338]">
-      <View className="bg-[rgba(0, 0, 0, 0.00)] p-[20px] rounded-lg items-center">
+    <View className="flex-1 justify-center items-center bg-[#313338] p-5">
+      <View className="bg-[#1e1f22] p-[30] rounded-lg items-center w-full max-w-[500px]">
         <MaterialCommunityIcons
           name="food-apple-outline"
           size={100}
           color="#c33c41"
-          margin={5}
         />
-        <Text className="text-4xl font-bold mb-[10px] text-[#FFFFFF]">
-          Entrar
-        </Text>
+        <Text className="text-4xl font-bold mb-4 text-[#FFFFFF]">Entrar</Text>
+
         <InputField
           placeholder="E-mail"
-          value={email}
-          onChangeText={setEmail}
+          value={email.value}
+          onChangeText={(value) => handleInputChange("email", value)}
+          onBlur={() => handleBlur("email")}
         />
+        {validateField(email, "email") && email.dirty && (
+          <Text className="text-red-500 text-sm">
+            {validateField(email, "email")}
+          </Text>
+        )}
+
         <InputField
           placeholder="Senha"
           secureTextEntry={true}
-          value={senha}
-          onChangeText={setSenha}
+          value={senha.value}
+          onChangeText={(value) => handleInputChange("senha", value)}
+          onBlur={() => handleBlur("senha")}
         />
+        {validateField(senha, "senha") && senha.dirty && (
+          <Text className="text-red-500 text-sm">
+            {validateField(senha, "senha")}
+          </Text>
+        )}
+
         <TouchButton onPress={() => replacePath("home")} text="Logar" />
         <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
       </View>

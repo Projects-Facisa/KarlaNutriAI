@@ -8,7 +8,7 @@ interface TouchButtonProps {
 
 const TouchButton = ({ onPress, text }: TouchButtonProps) => (
   <TouchableOpacity onPress={onPress}>
-    <Text className="text-[#F5F5F5] bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
+    <Text className="text-[#F5F5F5] bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl border border-[#313338] ">
       {text}
     </Text>
   </TouchableOpacity>

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-    nome: {
+    name: {
         type: String,
         required: true,
     },
@@ -14,11 +14,11 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
-    senha: {
+    password: {
         type: String,
         required: true,
     },
-    telefone: {
+    tel: {
         type: String,
         required: true,
         unique: true,

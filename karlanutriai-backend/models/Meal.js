@@ -1,16 +1,20 @@
 import mongoose from "mongoose";
 
 const mealSchema = new mongoose.Schema({
-    tipo: {
+    type: {
         type: String,
         enum: ['Cafe da manha', 'Almoco', 'Lanche', 'Janta'],
         required: true,
     },
-    data: {
+    date: {
         type: Date,
         required: true,
     },
-    usuarioId: {
+    description: {
+        type: Text,
+        required: true,
+    },
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,

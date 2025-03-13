@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        match: /^\S+@\S+\.\S+$/,
+        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         trim: true,
         lowercase: true
     },
@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre(`save`, async function(next) {
-    if (!this.isModified('senha')) return next();
+    if (!this.isModified('password')) return next();
 
     const salt = await bcrypt.genSalt(10);
-    this.senha = await bcrypt.hash(this.senha, salt);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
 })
 

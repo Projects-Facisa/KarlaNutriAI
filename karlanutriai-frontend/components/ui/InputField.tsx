@@ -16,7 +16,7 @@ const InputField = ({
   ...rest
 }: InputFieldProps) => (
   <TextInput
-    className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]"
+    className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5] bg-[#313338] "
     placeholder={placeholder}
     placeholderTextColor={"#F5F5F5"}
     secureTextEntry={secureTextEntry}

@@ -13,7 +13,7 @@ interface BottomNavigationProps {
 
 const BottomNavigation = ({ items, activeItem }: BottomNavigationProps) => {
   return (
-    <View className="absolute bottom-0 w-full items-center bg-[#2b2d31] border-t border-[#1e1f22] py-3">
+    <View className="fixed bottom-0 w-full items-center bg-[#2b2d31] border-t border-[#1e1f22] py-3">
       <View className="flex-row justify-around w-full max-w-sm">
         {items.map((item) => (
           <TouchableOpacity

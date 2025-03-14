@@ -48,8 +48,7 @@ class UserService {
 
     async findUserByEmail(email) {
         try {
-            const user = await User.findOne({ email });
-            return user;
+            return await User.findOne({ email });
         } catch (error) {
             throw new Error(`Erro ao buscar usuário por email: ${error.message}`);
         }
@@ -73,6 +72,7 @@ class UserService {
 
             const existingEmailUser = await User.findOne({ email });
             const existingTelUser = await User.findOne({ tel });
+
             if (String(existingEmailUser._id) !== userId || String(existingTelUser._id) !== userId) {
                 throw new Error(
                     existingEmailUser && existingTelUser ? 'Email and telefone ja existem' :

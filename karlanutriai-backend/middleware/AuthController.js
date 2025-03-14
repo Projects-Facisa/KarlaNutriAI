@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import userService from "../services/userService.js";
 import bcrypt from "bcrypt";
+import NutritionalData from "../models/NutritionalData.js";
+import NutritionalDataService from "../services/NutritionalDataService.js";
 
 export const signin = async (req, res) => {
     try {
@@ -60,3 +62,13 @@ export const logout = (req, res) => {
 
         return res.status(200).json({message: "Logout successful."});
 };
+
+export const displayHome = async (req, res) => {
+    try {
+        const user = req.headers.user;
+        const data = await NutritionalDataService.findDataByUserID(user)
+        return res.status(200).json({display: !!data})
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}

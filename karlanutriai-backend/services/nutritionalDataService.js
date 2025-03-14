@@ -3,14 +3,14 @@ import User from '../models/User.js';
 
 class nutritionalDataService {
 
-    async createNutritionalData(data) {
+    async create(data) {
         // Verifica se o User existe
         const user = await User.findById(data.userId);
         if (!user) {
             throw new Error('Os dados nutricionais precisam pertencer a um usuario existente');
         }
         // Verifica se o usuario ja possui dados nutricionais cadastrados
-        const existingData = await NutritionalData.findOne({ userId: data.userId });
+        const existingData = await this.findDataByUserID(data.userId);
         if (existingData) {
             throw new Error('O usuario ja possui dados nutricionais cadastrados');
         }
@@ -23,8 +23,8 @@ class nutritionalDataService {
         return await NutritionalData.findById(id);
     }
 
-    async getNutritionalDataByUserId(userId) {
-        return await NutritionalData.findOne({ userId });
+    async findDataByUserID(userId) {
+        return await NutritionalData.findOne({userId: userId})
     }
 
     async updateNutritionalData(id, data, userId) {

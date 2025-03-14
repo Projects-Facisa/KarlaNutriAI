@@ -15,9 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/Card";
-import TouchButton from "../components/ui/TouchButton";
-import "../global.css";
-import BottomNavigation from "../components/ui/BottomNavigation";
+import TouchButton from "../../components/ui/TouchButton";
+import "../../global.css";
 import InputField from "@/components/ui/InputField";
 
 type MealTypes = "Cafe da manha" | "Almoco" | "Lanche" | "Janta";
@@ -410,62 +409,6 @@ const Home = () => {
           </ScrollView>
         </View>
       </Modal>
-      <BottomNavigation
-        items={[
-          {
-            id: 1,
-            icon: (
-              <MaterialCommunityIcons name="home" size={30} color="#5d6af0" />
-            ),
-            onPress: () => router.replace("/home"),
-          },
-          {
-            id: 2,
-            icon: (
-              <MaterialCommunityIcons
-                name="chat-processing"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => router.replace("/(tabs)/chat"),
-          },
-          {
-            id: 3,
-            icon: (
-              <MaterialCommunityIcons
-                name="food-fork-drink"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => router.replace("/home"),
-          },
-          {
-            id: 4,
-            icon: (
-              <MaterialCommunityIcons
-                name="account"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => router.replace("/(tabs)/userCard"),
-          },
-          {
-            id: 5,
-            icon: (
-              <MaterialCommunityIcons
-                name="account"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => router.replace("/(tabs)/support"),
-          },
-        ]}
-        activeItem={1}
-      />
     </View>
   );
 };

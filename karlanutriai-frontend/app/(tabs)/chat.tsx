@@ -42,7 +42,7 @@ const Chat = () => {
 
     const botMessage: Message = {
       id: messages.length + 1,
-      text: "silas é gay",
+      text: "boa noite",
       sender: "bot",
     };
 

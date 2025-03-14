@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import BottomNavigation from "@/components/ui/BottomNavigation";
 import InputField from "@/components/ui/InputField";
 import "../../global.css";
 
@@ -57,7 +56,7 @@ const UserCard = () => {
       >
         {isEditing ? (
           <View className="items-center px-4">
-            <Text className="text-2xl font-bold mb-4 self-center">
+            <Text className="text-[#F5F5F5] text-2xl font-bold mb-4 self-center">
               Editar Perfil
             </Text>
             <View className="w-full max-w-[300px]">
@@ -93,13 +92,13 @@ const UserCard = () => {
                 onPress={() => setIsEditing(false)}
                 className="p-4 items-center"
               >
-                <Text>Voltar</Text>
+                <Text className="text-[#F5F5F5]">Voltar</Text>
               </TouchableOpacity>
             </View>
           </View>
         ) : (
           <View className="items-center px-4">
-            <Text className="text-2xl font-bold mb-4 self-center text-[#F5F5F5]">
+            <Text className=" text-2xl font-bold mb-4 self-center text-[#F5F5F5]">
               Perfil
             </Text>
             <View className="w-full max-w-[300px]">
@@ -254,63 +253,6 @@ const UserCard = () => {
           </ScrollView>
         </View>
       </Modal>
-
-      <BottomNavigation
-        items={[
-          {
-            id: 1,
-            icon: (
-              <MaterialCommunityIcons name="home" size={30} color="#5d6af0" />
-            ),
-            onPress: () => replacePath("home"),
-          },
-          {
-            id: 2,
-            icon: (
-              <MaterialCommunityIcons
-                name="chat-processing"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => replacePath("(tabs)/chat"),
-          },
-          {
-            id: 3,
-            icon: (
-              <MaterialCommunityIcons
-                name="food-fork-drink"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => replacePath("home"),
-          },
-          {
-            id: 4,
-            icon: (
-              <MaterialCommunityIcons
-                name="account"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => replacePath("(tabs)/userCard"),
-          },
-          {
-            id: 5,
-            icon: (
-              <MaterialCommunityIcons
-                name="account"
-                size={30}
-                color="#5d6af0"
-              />
-            ),
-            onPress: () => replacePath("(tabs)/support"),
-          },
-        ]}
-        activeItem={4}
-      />
     </View>
   );
 };

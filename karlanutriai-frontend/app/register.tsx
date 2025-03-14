@@ -182,7 +182,7 @@ const Register = () => {
           </Text>
         )}
 
-        <TouchButton onPress={() => replacePath("home")} text="Registrar" />
+        <TouchButton onPress={() => replacePath("login")} text="Registrar" />
         <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
       </View>
     </View>

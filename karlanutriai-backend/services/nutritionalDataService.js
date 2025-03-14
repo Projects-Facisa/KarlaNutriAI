@@ -42,19 +42,19 @@ class nutritionalDataService {
         return await NutritionalData.findByIdAndUpdate(id, data, { new: true });
     }
 
-    async deleteNutritionalData(id, userId) {
+    async deleteNutritionalData(userId) {
         // Verifica se o NutritionalData existe
-        const nutritionalData = await NutritionalData.findById(id);
+        const nutritionalData = await this.findDataByUserID(userId)
         if (!nutritionalData) {
-            throw new Error('Nao ha dados nutricionais com esse ID');
+            return 'Nao ha dados nutricionais com esse ID';
         }
 
-        // Verifica se o usuário logado é o dono dos dados
-        if (nutritionalData.userId.toString() !== userId) {
-            throw new Error('Acesso negado. Você não tem permissão para excluir dados pertencentes a outro usuario.');
-        }
+        // // Verifica se o usuário logado é o dono dos dados | não vai ser necessário por já pesquisar pelo user ID
+        // if (nutritionalData.userId.toString() !== userId) {
+        //     throw new Error('Acesso negado. Você não tem permissão para excluir dados pertencentes a outro usuario.');
+        // }
 
-        return await NutritionalData.findByIdAndDelete(id);
+        return await NutritionalData.findByIdAndDelete(nutritionalData._id);
     }
 }
 

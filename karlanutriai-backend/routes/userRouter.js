@@ -1,6 +1,6 @@
 import express from "express";
 const router = new express.Router();
-import UserController from "../controllers/UserController.js";
+import UserController from "../controllers/userController.js";
 import {tokenValidate} from "../middleware/Auth.js";
 
 router.post(`/`, UserController.create);

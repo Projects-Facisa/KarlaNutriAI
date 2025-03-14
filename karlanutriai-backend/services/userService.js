@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import { isEmail, verifyPassword } from "../GlobalFunctions.js";
+import { isEmail, verifyPassword } from "../globalFunctions.js";
 import bcrypt from "bcrypt";
 
 class UserService {

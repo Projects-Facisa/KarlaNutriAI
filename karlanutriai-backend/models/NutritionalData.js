@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const nutritionalDataSchema = new mongoose.Schema({
     birthDate: {
-        type: Data,
+        type: Date,
         required: true,
     },
     height: {
@@ -49,6 +49,7 @@ const nutritionalDataSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
+        unique: true,
     },
 });
 

@@ -9,7 +9,6 @@ export function tokenValidate(request, response, next) {
 
     try {
         const payload = jsonwebtoken.verify(token, process.env.JWT_ACCESS_SECRET);
-
         if (typeof payload !== 'object' || !payload.user) {
             return response.status(401).json({access: false, message: 'Invalid token. User not found in token.' });
         }

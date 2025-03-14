@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from "../models/User.js";
+import userService from "../services/userService.js";
 import bcrypt from "bcrypt";
 
 export const signin = async (req, res) => {
@@ -11,7 +11,7 @@ export const signin = async (req, res) => {
             return res.status(400).json({ error: "Email and password are required" });
         }
 
-        const user = await User.findOne({ email: email }, { senha: 1, _id: 1 });
+        const user = await userService.findUserByEmail(email);
 
         // Check if user exists
         if (!user) {
@@ -19,7 +19,7 @@ export const signin = async (req, res) => {
         }
 
         // Compare provided password with stored password
-        const isMatch = await bcrypt.compare(password, user.senha);
+        const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
             return res.status(401).json({ error: 'Invalid Access' });
@@ -34,11 +34,13 @@ export const signin = async (req, res) => {
 
         // Set cookie with token
         res.cookie("authToken", token, {
-            maxAge: 3600000,
+            maxAge: 1296000000,
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
         });
+
+
 
         return res.status(200).json({ login: true, message: "SignIn successful" });
 
@@ -48,12 +50,13 @@ export const signin = async (req, res) => {
 }
 
 export const logout = (req, res) => {
-    // Clear the auth token cookie
-    res.clearCookie("authToken", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-    });
 
-    return res.status(200).json({ message: "Logout successful." });
+        // Clear the auth token cookie
+        res.clearCookie("authToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        return res.status(200).json({message: "Logout successful."});
 };

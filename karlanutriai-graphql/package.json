@@ -1,0 +1,19 @@
+{
+  "name": "karlanutriai-graphql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev:simple": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "apollo-server-express": "^3.13.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "graphql": "^16.10.0",
+    "mongoose": "^8.12.1"
+  }
+}

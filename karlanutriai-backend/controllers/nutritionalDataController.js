@@ -1,4 +1,5 @@
 import nutritionalDataService from "../services/nutritionalDataService.js";
+import NutritionalDataService from "../services/nutritionalDataService.js";
 
 class NutritionalDataController {
     constructor() {
@@ -42,7 +43,7 @@ class NutritionalDataController {
         }
     }
 
-    async getNutritionalDataById(req, res) {
+    async getById(req, res) {
         try {
             const { id } = req.params;
             const nutritionalData = await nutritionalDataService.getNutritionalDataById(id);
@@ -55,9 +56,9 @@ class NutritionalDataController {
         }
     }
 
-    async getNutritionalDataByUserId(req, res) {
+    async get(req, res) {
         try {
-            const { userId } = req.params
+            const userId = req.headers.user
             const nutritionalData = await nutritionalDataService.getNutritionalDataByUserId(userId);
             if (!nutritionalData) {
                 return res.status(404).json({ message: 'Nao ha dados nutricionais cadastrados para esse usuario' });
@@ -68,17 +69,26 @@ class NutritionalDataController {
         }
     }
 
-    async updateNutritionalData(req, res) {
+    async update(req, res) {
         try {
-            const { id } = req.params;
             const data = req.body;
-            const userId = req.userId; // ID do usuário logado
+            const userId = req.headers.user; // ID do usuário logado
 
-            const nutritionalData = await nutritionalDataService.updateNutritionalData(id, data, userId);
+            const nutritionalData = await nutritionalDataService.updateNutritionalData(data, userId);
             if (!nutritionalData) {
                 return res.status(404).json({ message: 'Nutritional data not found' });
             }
             res.status(200).json(nutritionalData);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async delete (req, res) {
+        try {
+            const user = req.headers.user
+            const nutriData = await NutritionalDataService.deleteNutritionalData(user);
+            return res.status(201).json(nutriData)
         } catch (error) {
             res.status(400).json({ error: error.message });
         }

@@ -10,7 +10,7 @@ class nutritionalDataService {
             throw new Error('Os dados nutricionais precisam pertencer a um usuario existente');
         }
         // Verifica se o usuario ja possui dados nutricionais cadastrados
-        const existingData = await this.findDataByUserID(data.userId);
+        const existingData = await this.getNutritionalDataByUserId(data.userId);
         if (existingData) {
             throw new Error('O usuario ja possui dados nutricionais cadastrados');
         }
@@ -23,30 +23,30 @@ class nutritionalDataService {
         return await NutritionalData.findById(id);
     }
 
-    async findDataByUserID(userId) {
+    async getNutritionalDataByUserId(userId) {
         return await NutritionalData.findOne({userId: userId})
     }
 
-    async updateNutritionalData(id, data, userId) {
+    async updateNutritionalData(data, userId) {
         // Verifica se o NutritionalData existe
-        const nutritionalData = await NutritionalData.findById(id);
+        const nutritionalData = await this.getNutritionalDataByUserId(userId)
         if (!nutritionalData) {
-            throw new Error('Os dados nutricionais ainda nao estao cadastrados');
+            return 'Nao ha dados nutricionais para esse usuário';
         }
 
-        // Verifica se o usuário logado é dono dos dados nutricionais
-        if (nutritionalData.userId.toString() !== userId) {
-            throw new Error('Acesso negado. Você não tem permissão para editar dados pertencentes a outro usuario.');
-        }
+        // // Verifica se o usuário logado é o dono dos dados | não vai ser necessário por já pesquisar pelo user ID
+        // if (nutritionalData.userId.toString() !== userId) {
+        //     throw new Error('Acesso negado. Você não tem permissão para excluir dados pertencentes a outro usuario.');
+        // }
 
-        return await NutritionalData.findByIdAndUpdate(id, data, { new: true });
+        return await NutritionalData.findByIdAndUpdate(nutritionalData._id, data, { new: true });
     }
 
     async deleteNutritionalData(userId) {
         // Verifica se o NutritionalData existe
-        const nutritionalData = await this.findDataByUserID(userId)
+        const nutritionalData = await this.getNutritionalDataByUserId(userId)
         if (!nutritionalData) {
-            return 'Nao ha dados nutricionais com esse ID';
+            return 'Nao ha dados nutricionais para esse usuário';
         }
 
         // // Verifica se o usuário logado é o dono dos dados | não vai ser necessário por já pesquisar pelo user ID

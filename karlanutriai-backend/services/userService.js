@@ -50,7 +50,7 @@ class UserService {
 
     async findUserById(userId){
         const userTemp = await User.findById(userId, {__v: 0});
-        const nutriData = await  NutritionalDataService.findDataByUserID(userId);
+        const nutriData = await  NutritionalDataService.getNutritionalDataByUserId(userId);
 
         const user = {
             ...userTemp._doc,

@@ -23,7 +23,7 @@ class mealService {
     }
 
     async getAllMealsByUserId(userId) {
-        const meals = await Meal.find({ userId });
+        const meals = await Meal.find({ userId: userId });
         if (meals.length === 0) {
             return 'Nao ha refeicoes para este usuario!';
         }

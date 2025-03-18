@@ -1,14 +1,14 @@
 import mealService from "../services/mealService.js";
 
 class MealController {
-    constructor() {
-        this.typeList = [
-            'Cafe da manha',
-            'Almoco',
-            'Lanche',
-            'Janta'
-        ];
-    }
+    // constructor() {
+    //     this.typeList = [
+    //         'Cafe da manha',
+    //         'Almoco',
+    //         'Lanche',
+    //         'Janta'
+    //     ];
+    // }
 
     async create(req, res) {
         try {
@@ -16,11 +16,18 @@ class MealController {
 
             const {date, description, typeIndex} = req.body
 
+            const typeList = [
+                'Cafe da manha',
+                'Almoco',
+                'Lanche',
+                'Janta'
+            ];
+
             const meal = {
                 userId: user,
                 date,
                 description,
-                type: this.typeList[typeIndex]
+                type: typeList[typeIndex]
             }
 
             const newMeal = await mealService.createMeal(meal);
@@ -37,6 +44,7 @@ class MealController {
             if (!meal) {
                 return res.status(404).json({ message: 'Nao existe refeicao com este ID!' });
             }
+            return res.status(200).json(meal)
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -51,6 +59,7 @@ class MealController {
             if (meals.length === 0) {
                 return res.status(404).json({ message: 'Nao ha refeicoes para este usuario!' });
             }
+            return res.status(200).json(meals)
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -61,7 +70,20 @@ class MealController {
             const data = req.body;
             const mealId = req.params.id;
 
-            const meal = await mealService.updateMeal(data, mealId);
+            const typeList = [
+                'Cafe da manha',
+                'Almoco',
+                'Lanche',
+                'Janta'
+            ];
+
+            const newMeal = {
+                date: data.date,
+                description: data.description,
+                type: typeList[data.typeIndex]
+            }
+
+            const meal = await mealService.updateMeal(newMeal, mealId);
             if (!meal) {
                 return res.status(404).json({ message: 'Nao existe refeicao com este ID!' });
             }

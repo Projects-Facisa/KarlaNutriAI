@@ -1,7 +1,7 @@
 import express from "express";
-const router = new express.Router();
 import UserController from "../controllers/userController.js";
 import {tokenValidate} from "../middleware/Auth.js";
+const router = new express.Router();
 
 router.post(`/`, UserController.create);
 router.put(`/`, tokenValidate, UserController.update);

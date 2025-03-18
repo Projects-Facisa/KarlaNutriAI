@@ -1,5 +1,4 @@
 import nutritionalDataService from "../services/nutritionalDataService.js";
-import NutritionalDataService from "../services/nutritionalDataService.js";
 
 class NutritionalDataController {
     // constructor() {

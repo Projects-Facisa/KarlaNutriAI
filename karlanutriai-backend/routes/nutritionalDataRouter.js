@@ -1,7 +1,7 @@
 import express from "express";
-const router = new express.Router();
 import NutritionalDataController from "../controllers/nutritionalDataController.js";
 import {tokenValidate} from "../middleware/Auth.js";
+const router = new express.Router();
 
 router.post("/",tokenValidate, NutritionalDataController.create);
 router.put("/", tokenValidate, NutritionalDataController.update);

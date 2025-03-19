@@ -50,7 +50,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/*      <Tabs.Screen
         name="meal"
         options={{
           title: "Meal",
@@ -63,6 +63,7 @@ export default function TabLayout() {
           ),
         }}
       />
+      */}
       <Tabs.Screen
         name="userCard"
         options={{
@@ -77,7 +78,7 @@ export default function TabLayout() {
         options={{
           title: "Support",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" size={30} color={color} />
+            <MaterialCommunityIcons name="headset" size={30} color={color} />
           ),
         }}
       />

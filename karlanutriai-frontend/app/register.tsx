@@ -90,13 +90,13 @@ const Register = () => {
     if (!data.value && data.dirty) {
       return "Campo obrigatório!";
     } else if (type === "email" && data.dirty && !regexEmail.test(data.value)) {
-      return "E-mail inválido!";
+      return "Tente por o formato seunome@mail.com";
     } else if (
       type === "telefone" &&
       data.dirty &&
       !regexTelefone.test(data.value)
     ) {
-      return "Número inválido! (Formato esperado: (XX) 9XXXX-XXXX)";
+      return "Tente por o formato (XX) (9XXXX-XXXX)";
     } else if (
       type === "repetirSenha" &&
       data.dirty &&
@@ -126,7 +126,7 @@ const Register = () => {
           onBlur={() => handleBlur("nome")}
         />
         {validateField(nome, "nome") && nome.dirty && (
-          <Text className="text-red-500 text-sm">
+          <Text className="text-red-500 text-sm self-start font-poppins">
             {validateField(nome, "nome")}
           </Text>
         )}
@@ -138,7 +138,7 @@ const Register = () => {
           onBlur={() => handleBlur("email")}
         />
         {validateField(email, "email") && email.dirty && (
-          <Text className="text-red-500 text-sm">
+          <Text className="text-red-500 text-sm self-start font-poppins">
             {validateField(email, "email")}
           </Text>
         )}
@@ -151,7 +151,7 @@ const Register = () => {
           onBlur={() => handleBlur("telefone")}
         />
         {validateField(telefone, "telefone") && telefone.dirty && (
-          <Text className="text-red-500 text-sm">
+          <Text className="text-red-500 text-sm self-start font-poppins">
             {validateField(telefone, "telefone")}
           </Text>
         )}
@@ -164,7 +164,7 @@ const Register = () => {
           onBlur={() => handleBlur("senha")}
         />
         {validateField(senha, "senha") && senha.dirty && (
-          <Text className="text-red-500 text-sm">
+          <Text className="text-red-500 text-sm self-start font-poppins">
             {validateField(senha, "senha")}
           </Text>
         )}
@@ -177,11 +177,10 @@ const Register = () => {
           onBlur={() => handleBlur("repetirSenha")}
         />
         {validateField(repetirSenha, "repetirSenha") && repetirSenha.dirty && (
-          <Text className="text-red-500 text-sm">
+          <Text className="text-red-500 text-sm self-start font-poppins">
             {validateField(repetirSenha, "repetirSenha")}
           </Text>
         )}
-
         <TouchButton onPress={() => replacePath("login")} text="Registrar" />
         <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
       </View>

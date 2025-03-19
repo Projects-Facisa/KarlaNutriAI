@@ -14,16 +14,21 @@ import "../../global.css";
 
 type MetaOption = "Manter peso" | "Perder peso" | "Ganhar peso";
 
+const regexEmail = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+
 const UserCard = () => {
   const router = useRouter();
   const replacePath = (path: any): void => {
     router.replace(path);
   };
 
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [telefone, setTelefone] = useState("");
+  const [nome, setNome] = useState({ value: "", dirty: false });
+  const [email, setEmail] = useState({ value: "", dirty: false });
+  const [senha, setSenha] = useState({ value: "", dirty: false });
+  const [telefone, setTelefone] = useState({ value: "", dirty: false });
+
+  const [profileError, setProfileError] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -36,16 +41,62 @@ const UserCard = () => {
   const [meta, setMeta] = useState<MetaOption>("Manter peso");
   const [alergia, setAlergia] = useState("");
 
-  const [isEditing, setIsEditing] = useState(false);
+  const handleInputChange = (
+    field: "nome" | "email" | "senha" | "telefone",
+    value: string
+  ) => {
+    setProfileError("");
+    if (field === "nome") {
+      setNome((prev) => ({ value, dirty: prev.dirty }));
+    } else if (field === "email") {
+      setEmail((prev) => ({ value, dirty: prev.dirty }));
+    } else if (field === "senha") {
+      setSenha((prev) => ({ value, dirty: prev.dirty }));
+    } else if (field === "telefone") {
+      setTelefone((prev) => ({ value, dirty: prev.dirty }));
+    }
+  };
 
-  const handleSaveCardData = () => {
-    Alert.alert("Sucesso", "Dados do card salvos!");
-    setModalVisible(false);
+  const handleBlur = (field: "nome" | "email" | "senha" | "telefone") => {
+    if (field === "nome") {
+      setNome((prev) => ({ ...prev, dirty: true }));
+    } else if (field === "email") {
+      setEmail((prev) => ({ ...prev, dirty: true }));
+    } else if (field === "senha") {
+      setSenha((prev) => ({ ...prev, dirty: true }));
+    } else if (field === "telefone") {
+      setTelefone((prev) => ({ ...prev, dirty: true }));
+    }
+  };
+
+  const validateField = (
+    data: { value: string; dirty: boolean },
+    type: string
+  ) => {
+    if (!data.value && data.dirty) {
+      return "Campo obrigatório!";
+    }
+    if (type === "email" && !regexEmail.test(data.value) && data.dirty) {
+      return "Tente por o formato seunome@mail.com";
+    }
+    return null;
   };
 
   const handleSaveProfile = () => {
+    if (!nome.value || !email.value || !senha.value || !telefone.value) {
+      setProfileError("Preencha todos os campos obrigatórios!");
+      return;
+    }
+    if (!regexEmail.test(email.value)) {
+      setProfileError("E-mail inválido!");
+      return;
+    }
     Alert.alert("Perfil", "Dados do perfil salvos!");
     setIsEditing(false);
+  };
+
+  const handleSaveCardData = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -62,27 +113,61 @@ const UserCard = () => {
             <View className="w-full max-w-[300px]">
               <InputField
                 placeholder="Nome"
-                value={nome}
-                onChangeText={setNome}
+                value={nome.value}
+                onChangeText={(value) => handleInputChange("nome", value)}
+                onBlur={() => handleBlur("nome")}
               />
+              {validateField(nome, "nome") && nome.dirty && (
+                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
+                  {validateField(nome, "nome")}
+                </Text>
+              )}
+
               <InputField
                 placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
+                value={email.value}
+                onChangeText={(value) => handleInputChange("email", value)}
+                onBlur={() => handleBlur("email")}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
+              {validateField(email, "email") && email.dirty && (
+                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
+                  {validateField(email, "email")}
+                </Text>
+              )}
+
               <InputField
                 placeholder="Senha"
-                value={senha}
-                onChangeText={setSenha}
+                value={senha.value}
+                onChangeText={(value) => handleInputChange("senha", value)}
+                onBlur={() => handleBlur("senha")}
                 secureTextEntry={true}
               />
+              {validateField(senha, "senha") && senha.dirty && (
+                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
+                  {validateField(senha, "senha")}
+                </Text>
+              )}
+
               <InputField
                 placeholder="Telefone"
-                value={telefone}
-                onChangeText={setTelefone}
+                value={telefone.value}
+                onChangeText={(value) => handleInputChange("telefone", value)}
+                onBlur={() => handleBlur("telefone")}
               />
+              {validateField(telefone, "telefone") && telefone.dirty && (
+                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
+                  {validateField(telefone, "telefone")}
+                </Text>
+              )}
+
+              {profileError ? (
+                <Text className="text-red-500 text-sm mt-2 self-start text-center font-poppins">
+                  {profileError}
+                </Text>
+              ) : null}
+
               <TouchableOpacity onPress={handleSaveProfile}>
                 <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
                   Salvar Perfil
@@ -98,21 +183,21 @@ const UserCard = () => {
           </View>
         ) : (
           <View className="items-center px-4">
-            <Text className=" text-2xl font-bold mb-4 self-center text-[#F5F5F5]">
+            <Text className="text-2xl font-bold mb-4 self-center text-[#F5F5F5]">
               Perfil
             </Text>
             <View className="w-full max-w-[300px]">
               <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
-                {nome || "Nome"}
+                {nome.value || "Nome"}
               </Text>
               <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
-                {email || "email@exemplo.com"}
+                {email.value || "email@exemplo.com"}
               </Text>
               <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
-                {senha ? "••••••" : "Senha"}
+                {senha.value ? "••••••" : "Senha"}
               </Text>
               <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
-                {telefone || "(XX) XXXXX-XXXX"}
+                {telefone.value || "(XX) XXXXX-XXXX"}
               </Text>
               <TouchableOpacity onPress={() => setIsEditing(true)}>
                 <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">

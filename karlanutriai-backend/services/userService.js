@@ -49,15 +49,15 @@ class UserService {
     }
 
     async findUserById(userId){
-        const userTemp = await User.findById(userId, {__v: 0});
-        const nutriData = await  NutritionalDataService.getNutritionalDataByUserId(userId);
-
-        const user = {
-            ...userTemp._doc,
-            nutritionalData: nutriData
-        }
+        const user = await User.findById(userId).populate("nutritionalDataId");
 
         return user ? user : "não existe usuário para esse id"
+    }
+
+    async hasNutritionalData(userId){
+        const user = await User.findById(userId)
+
+        return user.nutritionalDataId ? true : false
     }
 
     async updateUser(userId, {name, email, password, tel}) {

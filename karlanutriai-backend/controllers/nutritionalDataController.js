@@ -1,3 +1,4 @@
+import User from "../models/User.js";
 import nutritionalDataService from "../services/nutritionalDataService.js";
 
 class NutritionalDataController {
@@ -48,6 +49,10 @@ class NutritionalDataController {
             }
 
             const newData = await nutritionalDataService.create(data)
+            await User.updateOne(
+                { _id: { $in: user }},
+                { $push: { nutritionalDataId: newData._id }}
+            );
 
             return res.status(201).json({newData});
         } catch (error) {

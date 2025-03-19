@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    nutritionalDataId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "NutritionalData",
+        unique: true,
+    }
 });
 
 userSchema.pre("save", async function(next) {

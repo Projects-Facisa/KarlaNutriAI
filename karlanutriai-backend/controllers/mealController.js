@@ -12,9 +12,9 @@ class MealController {
 
     async create(req, res) {
         try {
-            const user = req.headers.user;
+            const userId = req.headers.user;
 
-            const {date, description, typeIndex} = req.body
+            const {typeIndex, description, date} = req.body
 
             const typeList = [
                 'Cafe da manha',
@@ -24,10 +24,10 @@ class MealController {
             ];
 
             const meal = {
-                userId: user,
-                date,
+                type: typeList[typeIndex],
                 description,
-                type: typeList[typeIndex]
+                date,
+                userId: userId
             }
 
             const newMeal = await mealService.createMeal(meal);
@@ -69,6 +69,7 @@ class MealController {
         try {
             const data = req.body;
             const mealId = req.params.id;
+            const updateAt = Date.now();
 
             const typeList = [
                 'Cafe da manha',
@@ -80,7 +81,8 @@ class MealController {
             const newMeal = {
                 date: data.date,
                 description: data.description,
-                type: typeList[data.typeIndex]
+                type: typeList[data.typeIndex],
+                updateAt: updateAt
             }
 
             const meal = await mealService.updateMeal(newMeal, mealId);

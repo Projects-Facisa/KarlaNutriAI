@@ -45,6 +45,13 @@ const nutritionalDataSchema = new mongoose.Schema({
         enum: ['Ganhar peso', 'Perder peso', 'Manter peso'],
         required: true,
     },
+    createAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updateAt: {
+        type: Date,
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

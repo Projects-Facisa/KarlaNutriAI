@@ -90,6 +90,7 @@ class NutritionalDataController {
         try {
             const data = req.body;
             const userId = req.headers.user; // ID do usuário logado
+            const updateAt = Date.now();
 
             const bodyFatPercentageList = [
                 'Alto percentual de massa muscular',
@@ -114,6 +115,7 @@ class NutritionalDataController {
                 bodyFatPercentage: bodyFatPercentageList[data.bodyFatPercentageIndex],
                 metabolicRate: metabolicRateList[data.metabolicRateIndex],
                 goal: goalList[data.goalIndex],
+                updateAt: updateAt,
             }
 
             const nutritionalData = await nutritionalDataService.updateNutritionalData(newData, userId);

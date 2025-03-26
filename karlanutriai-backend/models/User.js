@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema({
   nutritionalDataId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "NutritionalData",
-    unique: true,
   },
 });
 

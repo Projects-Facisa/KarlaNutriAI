@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import InputField from "../components/ui/InputField";
 import TouchButton from "../components/ui/TouchButton";
 import "../global.css";
+import httpService from "./services/httpServices";
 
 type InputState = {
   value: string;
@@ -12,6 +13,7 @@ type InputState = {
 };
 
 const Register = () => {
+  const SERVER_URL = "http://localhost:5000/";
   const router = useRouter();
 
   const [nome, setNome] = useState<InputState>({ value: "", dirty: false });
@@ -56,10 +58,10 @@ const Register = () => {
         value: formatTelefone(value),
         dirty: prev.dirty,
       }));
-    } else if (field === "email") {
-      setEmail((prev) => ({ value, dirty: prev.dirty }));
     } else if (field === "nome") {
       setNome((prev) => ({ value, dirty: prev.dirty }));
+    } else if (field === "email") {
+      setEmail((prev) => ({ value, dirty: prev.dirty }));
     } else if (field === "senha") {
       setSenha((prev) => ({ value, dirty: prev.dirty }));
     } else if (field === "repetirSenha") {
@@ -105,6 +107,43 @@ const Register = () => {
       return "As senhas não coincidem!";
     }
     return null;
+  };
+
+  // Função de submit que valida e extrai os valores para a requisição
+  const handleSubmit = async () => {
+    // Marca todos os campos como dirty para disparar as validações
+    setNome((prev) => ({ ...prev, dirty: true }));
+    setEmail((prev) => ({ ...prev, dirty: true }));
+    setSenha((prev) => ({ ...prev, dirty: true }));
+    setTelefone((prev) => ({ ...prev, dirty: true }));
+    setRepetirSenha((prev) => ({ ...prev, dirty: true }));
+
+    // Verifica se há erros de validação
+    if (
+      validateField(nome, "nome") ||
+      validateField(email, "email") ||
+      validateField(senha, "senha") ||
+      validateField(telefone, "telefone") ||
+      validateField(repetirSenha, "repetirSenha")
+    ) {
+      return;
+    }
+
+    // Extrair os valores limpos para envio
+    const data = {
+      name: nome.value,
+      email: email.value,
+      password: senha.value,
+      tel: telefone.value,
+    };
+
+    try {
+      const registerProductUrl = `${SERVER_URL}user/`;
+      await httpService.post(registerProductUrl, data);
+      router.replace("/login");
+    } catch (error) {
+      console.error("Erro ao registrar:", error);
+    }
   };
 
   return (
@@ -181,7 +220,8 @@ const Register = () => {
             {validateField(repetirSenha, "repetirSenha")}
           </Text>
         )}
-        <TouchButton onPress={() => replacePath("login")} text="Registrar" />
+
+        <TouchButton onPress={handleSubmit} text="Registrar" />
         <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
       </View>
     </View>

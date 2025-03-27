@@ -1,12 +1,12 @@
 import express from "express";
-import MealController from "../controllers/mealController.js"
-import {tokenValidate} from "../middleware/Auth.js";
+import MealController from "../controllers/mealController.js";
+
 const router = new express.Router();
 
-router.get("/:id",tokenValidate, MealController.getById);
-router.get("/", tokenValidate, MealController.getAllMealsByUser);
-router.post("/", tokenValidate, MealController.create);
-router.put("/:id", tokenValidate, MealController.update);
-router.delete("/:id",tokenValidate, MealController.delete);
+router.get("/:id", MealController.getById);
+router.get("", MealController.getAllMealsByUser);
+router.post("", MealController.create);
+router.put("/:id", MealController.update);
+router.delete("/:id", MealController.delete);
 
 export default router

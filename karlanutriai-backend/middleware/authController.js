@@ -1,75 +1,51 @@
 import jwt from 'jsonwebtoken';
 import userService from "../services/userService.js";
 import bcrypt from "bcrypt";
-import nutritionalDataService from "../services/nutritionalDataService.js";
 
 
 class AuthController {
 
-    async signin (req, res){
+    async signin(req, res) {
         try {
             const {email, password} = req.body;
 
             // Check if email and password are provided
             if (!email || !password) {
-                return res.status(400).json({error: "Email and password are required"});
+                return res.status(400).json({error: "E-Mail e Senha são obrigatórios"});
             }
 
             const user = await userService.findUserByEmail(email);
 
             // Check if user exists
             if (!user) {
-                return res.status(401).json({error: 'User not found'});
+                return res.status(401).json({error: 'Usuário não encontrado'});
             }
 
             // Compare provided password with stored password
             const isMatch = await bcrypt.compare(password, user.password);
 
             if (!isMatch) {
-                return res.status(401).json({error: 'Invalid Access'});
+                return res.status(401).json({error: 'Acesso negado'});
             }
 
             // Generate JWT token
             const token = jwt.sign(
-                {user: user._id},
+                {id: user._id, name: user.name},
                 process.env.JWT_ACCESS_SECRET,
                 {expiresIn: process.env.JWT_EXPIRES}
             );
 
-            // Set cookie with token
-            res.cookie("authToken", token, {
-                maxAge: 1296000000,
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
-            });
-
-
-            return res.status(200).json({login: true, message: "SignIn successful"});
+            return res.status(200).json({login: true, message: "SignIn Realizado com Sucesso", token: token});
 
         } catch (error) {
-            return res.status(400).json({error: "Invalid authorization header"});
+            return res.status(400).json({error: "Authorization header inválido"});
         }
     }
 
-
-    logout (req, res){
-
-        // Clear the auth token cookie
-        res.clearCookie("authToken", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-        });
-
-        return res.status(200).json({message: "Logout successful."});
-    };
-
-
-    async displayHome (req, res){
+    async displayHome(req, res) {
         try {
-            const userId = req.headers.user;
-            const hasNutritionalData = userService.hasNutritionalData(userId)
+            const {userData} = req.headers;
+            const hasNutritionalData = userService.hasNutritionalData(userData.id)
             return res.status(200).json({display: !!hasNutritionalData})
         } catch (error) {
             return res.status(400).json({error: error.message});

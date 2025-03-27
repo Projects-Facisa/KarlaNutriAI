@@ -1,22 +1,21 @@
 import jsonwebtoken from 'jsonwebtoken';
 
 export function tokenValidate(request, response, next) {
-    const token = request.cookies.authToken;
+    const token = request.headers.authorization;
 
     if (!token) {
-        return response.status(401).json({access: false, message: 'Access denied. No token provided.'});
+        return response.status(401).json({access: false, message: 'ACESSO NEGADO, token não encontrado'});
     }
 
     try {
         const payload = jsonwebtoken.verify(token, process.env.JWT_ACCESS_SECRET);
-        if (typeof payload !== 'object' || !payload.user) {
-            return response.status(401).json({access: false, message: 'Invalid token. User not found in token.' });
+        if (typeof payload !== 'object') {
+            return response.status(401).json({access: false, message: 'TOKEN INVÁLIDO' });
         }
 
-        request.headers['user'] = payload.user;
+        request.headers['userData'] = payload;
         return next();
     } catch (error) {
-        console.error('Token verification error:', error.message);
-        return response.status(401).json({access: false, message: 'Invalid token. Please log in again.' });
+        return response.status(401).json({access: false, message: 'ERRO AO VERIFICAR TOKEN.' });
     }
 }

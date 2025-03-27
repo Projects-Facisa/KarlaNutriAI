@@ -1,12 +1,12 @@
 import express from "express";
 import NutritionalDataController from "../controllers/nutritionalDataController.js";
-import {tokenValidate} from "../middleware/Auth.js";
+
 const router = new express.Router();
 
-router.post("/",tokenValidate, NutritionalDataController.create);
-router.put("/", tokenValidate, NutritionalDataController.update);
-router.delete("/", tokenValidate, NutritionalDataController.delete);
-router.get("/", tokenValidate, NutritionalDataController.get);
-router.get("/:id", tokenValidate, NutritionalDataController.getById)
+router.post("", NutritionalDataController.create);
+router.put("", NutritionalDataController.update);
+router.delete("", NutritionalDataController.delete);
+router.get("", NutritionalDataController.get);
+router.get("/:id", NutritionalDataController.getById)
 
 export default router;

@@ -1,14 +1,29 @@
-import { Tabs } from "expo-router";
-import React from "react";
+import { Redirect, Tabs } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import NavigationButton from "@/components/ui/NavigationButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
+import * as SecureStore from "expo-secure-store";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  const [userToken, setUserToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function checkToken() {
+      const token = await SecureStore.getItemAsync("userToken");
+      setUserToken(token);
+    }
+    checkToken();
+  }, []);
+
+  if (!userToken) {
+    return <Redirect href="/welcome" />;
+  }
 
   return (
     <Tabs

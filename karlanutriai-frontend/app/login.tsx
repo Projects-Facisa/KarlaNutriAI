@@ -7,9 +7,9 @@ import TouchButton from "../components/ui/TouchButton";
 import AuthButton from "../components/ui/AuthButton";
 import "../global.css";
 import httpService from "./services/httpServices";
+import * as SecureStore from "expo-secure-store";
 
 const Login = () => {
-  const SERVER_URL = "http://localhost:5000/";
   const router = useRouter();
 
   const [email, setEmail] = useState({ value: "", dirty: false });
@@ -53,36 +53,49 @@ const Login = () => {
   const handleSubmit = async () => {
     setEmail((prev) => ({ ...prev, dirty: true }));
     setSenha((prev) => ({ ...prev, dirty: true }));
-  
+
     if (validateField(email, "email") || validateField(senha, "senha")) {
       return;
     }
-  
+
     if (!regexEmail.test(email.value)) {
       setLoginError("E-mail ou senha incorretos");
       return;
     }
-  
+
     const data = {
       email: email.value,
       password: senha.value,
     };
-  
+
     try {
-      const loginProductUrl = `${SERVER_URL}auth/signin`;
-      await httpService.post(loginProductUrl, data);
+      const loginProductUrl = `auth/signin`;
+      const response = await httpService.post(loginProductUrl, data);
+
+      // Extraindo o token da resposta
+      const token = response.data.token;
+
+      // Armazenando o token de forma segura
+      await SecureStore.setItemAsync("userToken", token);
+
+      // Redireciona para a home
       router.replace("/home");
     } catch (error) {
       setLoginError("E-mail ou senha incorretos");
     }
   };
-  
 
   return (
     <View className="flex-1 justify-center items-center bg-[#313338] p-5">
       <View className="bg-[#1e1f22] p-[30] rounded-lg items-center w-full max-w-[500px]">
-        <MaterialCommunityIcons name="food-apple-outline" size={100} color="#c33c41" />
-        <Text className="text-4xl font-bold mb-4 text-[#FFFFFF] font-inter">Entrar</Text>
+        <MaterialCommunityIcons
+          name="food-apple-outline"
+          size={100}
+          color="#c33c41"
+        />
+        <Text className="text-4xl font-bold mb-4 text-[#FFFFFF] font-inter">
+          Entrar
+        </Text>
         <InputField
           placeholder="E-mail"
           value={email.value}
@@ -111,7 +124,12 @@ const Login = () => {
             {loginError}
           </Text>
         ) : null}
-        <AuthButton onPress={handleSubmit} text="Logar" disabled={isButtonDisabled} className="mt-4" />
+        <AuthButton
+          onPress={handleSubmit}
+          text="Logar"
+          disabled={isButtonDisabled}
+          className="mt-4"
+        />
         <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />
       </View>
     </View>

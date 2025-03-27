@@ -13,7 +13,6 @@ type InputState = {
 };
 
 const Register = () => {
-  const SERVER_URL = "http://localhost:5000/";
   const router = useRouter();
 
   const [nome, setNome] = useState<InputState>({ value: "", dirty: false });
@@ -138,7 +137,7 @@ const Register = () => {
     };
 
     try {
-      const registerProductUrl = `${SERVER_URL}user`;
+      const registerProductUrl = `/user`;
       await httpService.post(registerProductUrl, data);
       router.replace("/login");
     } catch (error) {

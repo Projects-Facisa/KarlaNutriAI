@@ -24,12 +24,13 @@ const Welcome = () => {
         />
         <Text className="text-4xl font-bold text-[#F5F5F5]">Bem-vindo ao </Text>
         <Text className="text-2xl m-[15] text-[#F5F5F5]">KarlaNutriAI</Text>
-
         <TouchButton onPress={() => replacePath("login")} text="Logar" />
         <TouchButton
           onPress={() => replacePath("register")}
           text="Registrar-se"
         />
+        <TouchButton onPress={() => replacePath("home")} text="Home" />
+        // PARA TESTES
       </View>
     </View>
   );

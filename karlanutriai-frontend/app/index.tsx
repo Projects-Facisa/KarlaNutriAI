@@ -1,9 +1,11 @@
 import { Redirect } from "expo-router";
-import * as Font from "expo-font";
 import { useState, useEffect } from "react";
+import * as Font from "expo-font";
+import * as SecureStore from "expo-secure-store";
 
 export default function Index() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [userToken, setUserToken] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadFonts() {
@@ -15,9 +17,18 @@ export default function Index() {
     loadFonts();
   }, []);
 
+  useEffect(() => {
+    async function checkToken() {
+      const token = await SecureStore.getItemAsync("userToken");
+      setUserToken(token);
+    }
+    checkToken();
+  }, []);
+
   if (!fontsLoaded) {
     return null;
   }
 
-  return <Redirect href="/welcome" />;
+  // Se o token existir, redireciona para a home, senão para a tela de welcome/login
+  return userToken ? <Redirect href="/home" /> : <Redirect href="/welcome" />;
 }

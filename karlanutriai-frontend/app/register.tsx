@@ -138,7 +138,7 @@ const Register = () => {
     };
 
     try {
-      const registerProductUrl = `${SERVER_URL}user/`;
+      const registerProductUrl = `${SERVER_URL}user`;
       await httpService.post(registerProductUrl, data);
       router.replace("/login");
     } catch (error) {

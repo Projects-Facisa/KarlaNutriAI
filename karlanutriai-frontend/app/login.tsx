@@ -69,7 +69,7 @@ const Login = () => {
     };
   
     try {
-      const loginProductUrl = `${SERVER_URL}auth/signin/`;
+      const loginProductUrl = `${SERVER_URL}auth/signin`;
       await httpService.post(loginProductUrl, data);
       router.replace("/home");
     } catch (error) {

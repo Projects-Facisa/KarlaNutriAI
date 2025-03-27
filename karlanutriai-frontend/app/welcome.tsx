@@ -30,7 +30,7 @@ const Welcome = () => {
           text="Registrar-se"
         />
         <TouchButton onPress={() => replacePath("home")} text="Home" />
-        // PARA TESTES
+        {/* PARA TESTES */}
       </View>
     </View>
   );

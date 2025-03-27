@@ -329,8 +329,8 @@ const Home = () => {
           >
             <Text className="text-center text-white font-bold">Deletar</Text>
           </TouchableOpacity>
-          <TouchButton onPress={handleLogout} text="logout" /> // LOGOUT PARA
-          TESTES
+          <TouchButton onPress={handleLogout} text="logout" />
+          {/* PARA TESTES */}
         </View>
       </ScrollView>
       <Modal

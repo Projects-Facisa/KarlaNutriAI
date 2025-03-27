@@ -12,10 +12,11 @@ const portApi = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:8081"],
+    origin: "*",
     credentials: true,
   })
 );
+
 app.use(cookieParser());
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ limit: "20mb", extended: true }));

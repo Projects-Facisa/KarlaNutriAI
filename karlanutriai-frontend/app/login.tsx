@@ -69,7 +69,7 @@ const Login = () => {
     };
 
     try {
-      const loginProductUrl = `auth/signin`;
+      const loginProductUrl = `auths/signin`;
       const response = await httpService.post(loginProductUrl, data);
 
       // Extraindo o token da resposta

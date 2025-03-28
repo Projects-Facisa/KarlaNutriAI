@@ -14,7 +14,7 @@ type InputState = {
 
 const Register = () => {
   const router = useRouter();
-
+  const [registerError, setRegisterError] = useState("");
   const [nome, setNome] = useState<InputState>({ value: "", dirty: false });
   const [email, setEmail] = useState<InputState>({ value: "", dirty: false });
   const [senha, setSenha] = useState<InputState>({ value: "", dirty: false });
@@ -52,6 +52,8 @@ const Register = () => {
     field: "nome" | "email" | "senha" | "repetirSenha" | "telefone",
     value: string
   ): void => {
+    // Limpa qualquer mensagem de erro ao modificar um campo
+    setRegisterError("");
     if (field === "telefone") {
       setTelefone((prev) => ({
         value: formatTelefone(value),
@@ -140,8 +142,15 @@ const Register = () => {
       const registerProductUrl = `/user`;
       await httpService.post(registerProductUrl, data);
       router.replace("/login");
-    } catch (error) {
-      console.error("Erro ao registrar:", error);
+    } catch (error: any) {
+      if (error.response) {
+        // Se a resposta do backend for um erro set o loginError com a mensagem de erro
+        const errorMessage = error.response.data.error || "Erro desconhecido";
+        setRegisterError(errorMessage); // Atualizando o estado com a mensagem de erro
+      } else {
+        // Se o erro for na url
+        setRegisterError("Erro de rede. Verifique sua conexão.");
+      }
     }
   };
 
@@ -219,6 +228,12 @@ const Register = () => {
             {validateField(repetirSenha, "repetirSenha")}
           </Text>
         )}
+
+        {registerError ? (
+          <Text className="text-red-500 text-sm mt-2 self-start text-center font-poppins">
+            {registerError}
+          </Text>
+        ) : null}
 
         <TouchButton onPress={handleSubmit} text="Registrar" />
         <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />

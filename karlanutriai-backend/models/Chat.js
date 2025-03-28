@@ -8,6 +8,10 @@ const chatSchema = new mongoose.Schema({
     updateAt: {
         type: Date,
     },
+    title: {
+        type: String,
+        default: "Novo Chat",
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

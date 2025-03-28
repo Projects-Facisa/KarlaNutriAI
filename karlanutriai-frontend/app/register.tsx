@@ -110,7 +110,7 @@ const Register = () => {
     return null;
   };
 
-  // Função de submit que valida os campos e envia os dados para o backend
+  // Função de submit que valida e extrai os valores para a requisição
   const handleSubmit = async () => {
     // Marca todos os campos como dirty para disparar as validações
     setNome((prev) => ({ ...prev, dirty: true }));
@@ -144,9 +144,11 @@ const Register = () => {
       router.replace("/login");
     } catch (error: any) {
       if (error.response) {
+        // Se a resposta do backend for um erro set o loginError com a mensagem de erro
         const errorMessage = error.response.data.error || "Erro desconhecido";
-        setRegisterError(errorMessage);
+        setRegisterError(errorMessage); // Atualizando o estado com a mensagem de erro
       } else {
+        // Se o erro for na url
         setRegisterError("Erro de rede. Verifique sua conexão.");
       }
     }

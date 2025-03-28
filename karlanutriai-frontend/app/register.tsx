@@ -14,7 +14,7 @@ type InputState = {
 
 const Register = () => {
   const router = useRouter();
-
+  const [registerError, setRegisterError] = useState("");
   const [nome, setNome] = useState<InputState>({ value: "", dirty: false });
   const [email, setEmail] = useState<InputState>({ value: "", dirty: false });
   const [senha, setSenha] = useState<InputState>({ value: "", dirty: false });
@@ -52,6 +52,8 @@ const Register = () => {
     field: "nome" | "email" | "senha" | "repetirSenha" | "telefone",
     value: string
   ): void => {
+    // Limpa qualquer mensagem de erro ao modificar um campo
+    setRegisterError("");
     if (field === "telefone") {
       setTelefone((prev) => ({
         value: formatTelefone(value),
@@ -108,7 +110,7 @@ const Register = () => {
     return null;
   };
 
-  // Função de submit que valida e extrai os valores para a requisição
+  // Função de submit que valida os campos e envia os dados para o backend
   const handleSubmit = async () => {
     // Marca todos os campos como dirty para disparar as validações
     setNome((prev) => ({ ...prev, dirty: true }));
@@ -140,8 +142,13 @@ const Register = () => {
       const registerProductUrl = `/user`;
       await httpService.post(registerProductUrl, data);
       router.replace("/login");
-    } catch (error) {
-      console.error("Erro ao registrar:", error);
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage = error.response.data.error || "Erro desconhecido";
+        setRegisterError(errorMessage);
+      } else {
+        setRegisterError("Erro de rede. Verifique sua conexão.");
+      }
     }
   };
 
@@ -219,6 +226,12 @@ const Register = () => {
             {validateField(repetirSenha, "repetirSenha")}
           </Text>
         )}
+
+        {registerError ? (
+          <Text className="text-red-500 text-sm mt-2 self-start text-center font-poppins">
+            {registerError}
+          </Text>
+        ) : null}
 
         <TouchButton onPress={handleSubmit} text="Registrar" />
         <TouchButton onPress={() => replacePath("welcome")} text="Voltar" />

@@ -139,7 +139,7 @@ const Register = () => {
     };
 
     try {
-      const registerProductUrl = `/user`;
+      const registerProductUrl = `/users`;
       await httpService.post(registerProductUrl, data);
       router.replace("/login");
     } catch (error: any) {

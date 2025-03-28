@@ -2,10 +2,12 @@ import { Redirect } from "expo-router";
 import { useState, useEffect } from "react";
 import * as Font from "expo-font";
 import * as SecureStore from "expo-secure-store";
+import FullScreenLoader from "@/components/FullScreenLoader";
 
 export default function Index() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [userToken, setUserToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadFonts() {
@@ -21,9 +23,14 @@ export default function Index() {
     async function checkToken() {
       const token = await SecureStore.getItemAsync("userToken");
       setUserToken(token);
+      setLoading(false);
     }
     checkToken();
   }, []);
+
+  if (loading) {
+    return <FullScreenLoader visible />;
+  }
 
   if (!fontsLoaded) {
     return null;

@@ -7,19 +7,25 @@ import NavigationButton from "@/components/ui/NavigationButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import * as SecureStore from "expo-secure-store";
+import FullScreenLoader from "@/components/FullScreenLoader";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
   const [userToken, setUserToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function checkToken() {
       const token = await SecureStore.getItemAsync("userToken");
       setUserToken(token);
+      setLoading(false);
     }
     checkToken();
   }, []);
+
+  if (loading) {
+    return <FullScreenLoader visible />;
+  }
 
   if (!userToken) {
     return <Redirect href="/welcome" />;

@@ -11,7 +11,7 @@ class chatService {
     async getChatById(id) {
         const chat = await Chat.findById(id).populate('Message');
         if (!chat) {
-            return 'Nao ha um chat com este ID!';
+            throw new Error('Nao ha um chat com este ID!');
         }
         return chat;
     }
@@ -19,7 +19,7 @@ class chatService {
     async getAllChatsByUserId(userId) {
         const chats = await Chat.find({ userId: userId });
         if (chats.length === 0) {
-            return 'Nao ha chats para este usuario!';
+            throw new Error('Nao ha nenhum chat cadastrado para esse usuario!');
         }
         return chats;
     }

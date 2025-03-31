@@ -18,7 +18,6 @@ import {
 import TouchButton from "../../components/ui/TouchButton";
 import "../../global.css";
 import InputField from "@/components/ui/InputField";
-import * as SecureStore from "expo-secure-store";
 
 type MealTypes = "Cafe da manha" | "Almoco" | "Lanche" | "Janta";
 type MealDays =
@@ -33,11 +32,6 @@ type MealDays =
 const mealOrder: MealTypes[] = ["Cafe da manha", "Almoco", "Lanche", "Janta"];
 
 const Home = () => {
-  const handleLogout = async () => {
-    await SecureStore.deleteItemAsync("userToken");
-    router.replace("/welcome");
-  };
-
   const router = useRouter();
   const [meals, setMeals] = useState<
     { type: MealTypes; date: MealDays; description: string }[]
@@ -329,8 +323,6 @@ const Home = () => {
           >
             <Text className="text-center text-white font-bold">Deletar</Text>
           </TouchableOpacity>
-          <TouchButton onPress={handleLogout} text="logout" />
-          {/* PARA TESTES */}
         </View>
       </ScrollView>
       <Modal

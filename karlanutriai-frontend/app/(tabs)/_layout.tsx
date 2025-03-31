@@ -27,10 +27,6 @@ export default function TabLayout() {
     return <FullScreenLoader visible />;
   }
 
-  if (!userToken) {
-    return <Redirect href="/welcome" />;
-  }
-
   return (
     <Tabs
       screenOptions={{
@@ -58,6 +54,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="meal"
+        options={{
+          title: "Meal",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="food-fork-drink"
+              size={30}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="chat"
         options={{
           title: "Chat",
@@ -71,35 +80,12 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/*      <Tabs.Screen
-        name="meal"
-        options={{
-          title: "Meal",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="food-fork-drink"
-              size={30}
-              color={color}
-            />
-          ),
-        }}
-      />
-      */}
       <Tabs.Screen
-        name="userCard"
+        name="profile"
         options={{
-          title: "UserCard",
+          title: "Profile",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="account" size={30} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="support"
-        options={{
-          title: "Support",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="headset" size={30} color={color} />
           ),
         }}
       />

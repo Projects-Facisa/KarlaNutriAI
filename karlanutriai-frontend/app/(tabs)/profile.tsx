@@ -10,13 +10,21 @@ import {
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputField from "@/components/ui/InputField";
+import ContactForm from "@/components/ContactForm";
 import "../../global.css";
+import TouchButton from "@/components/ui/TouchButton";
+import * as SecureStore from "expo-secure-store";
 
 type MetaOption = "Manter peso" | "Perder peso" | "Ganhar peso";
 
 const regexEmail = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 
-const UserCard = () => {
+const Profile = () => {
+  const handleLogout = async () => {
+    await SecureStore.deleteItemAsync("userToken");
+    router.replace("/welcome");
+  };
+
   const router = useRouter();
   const replacePath = (path: any): void => {
     router.replace(path);
@@ -30,7 +38,9 @@ const UserCard = () => {
   const [profileError, setProfileError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalCardVisible, setModalCardVisible] = useState(false);
+  const [modalContactVisible, setModalContactVisible] = useState(false);
+
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [percentualGordura, setPercentualGordura] = useState("");
   const [taxaMetabolica, setTaxaMetabolica] = useState("");
@@ -96,7 +106,7 @@ const UserCard = () => {
   };
 
   const handleSaveCardData = () => {
-    setModalVisible(false);
+    setModalCardVisible(false);
   };
 
   return (
@@ -187,16 +197,16 @@ const UserCard = () => {
               Perfil
             </Text>
             <View className="w-full max-w-[300px]">
-              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
                 {nome.value || "Nome"}
               </Text>
-              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
                 {email.value || "email@exemplo.com"}
               </Text>
-              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
                 {senha.value ? "••••••" : "Senha"}
               </Text>
-              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300] p-2 my-1 text-[#F5F5F5]">
+              <Text className="text-2xl border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
                 {telefone.value || "(XX) XXXXX-XXXX"}
               </Text>
               <TouchableOpacity onPress={() => setIsEditing(true)}>
@@ -205,7 +215,7 @@ const UserCard = () => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setModalVisible(true)}
+                onPress={() => setModalCardVisible(true)}
                 className="border border-[#1e1f22] rounded-md p-4 my-1 w-full items-center"
               >
                 <Text className="text-xl font-bold mb-2 text-[#F5F5F5]">
@@ -215,15 +225,28 @@ const UserCard = () => {
                   Toque para ver/editar os dados do seu card
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModalContactVisible(true)}
+                className="border border-[#1e1f22] rounded-md p-4 my-1 w-full items-center"
+              >
+                <Text className="text-xl font-bold mb-2 text-[#F5F5F5]">
+                  Suporte
+                </Text>
+                <Text className="text-[#F5F5F5]">
+                  Entre em contato com o suporte técnico
+                </Text>
+              </TouchableOpacity>
+              <TouchButton onPress={handleLogout} text="Logout" />
             </View>
           </View>
         )}
       </ScrollView>
 
+      {/* Modal para dados do card */}
       <Modal
         animationType="slide"
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        visible={modalCardVisible}
+        onRequestClose={() => setModalCardVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-[#313338]">
           <ScrollView
@@ -234,7 +257,7 @@ const UserCard = () => {
               <Text className="text-2xl font-bold mb-4 text-[#F5F5F5]">
                 Dados do Card
               </Text>
-              <Text className="text-lg text-center mb-4 w-[300] text-[#F5F5F5]">
+              <Text className="text-lg text-center mb-4 w-[300px] text-[#F5F5F5]">
                 Preencha levando em consideração seu tipo de corpo
               </Text>
               <View className="w-full max-w-[300px]">
@@ -282,7 +305,7 @@ const UserCard = () => {
                     onPress={() => setDropdownVisible(!dropdownVisible)}
                     className="flex-row justify-between items-center"
                   >
-                    <Text className="text-2xl text-[#F5F5F5] border border-[#1e1f22] rounded-lg w-[300] p-2 my-1">
+                    <Text className="text-2xl text-[#F5F5F5] border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1">
                       {meta || "O que planeja?"}
                     </Text>
                     <MaterialCommunityIcons
@@ -328,7 +351,7 @@ const UserCard = () => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => setModalVisible(false)}
+                  onPress={() => setModalCardVisible(false)}
                   className="p-4 items-center"
                 >
                   <Text className="text-[#F5F5F5]">Voltar</Text>
@@ -338,8 +361,17 @@ const UserCard = () => {
           </ScrollView>
         </View>
       </Modal>
+
+      {/* Modal para contato/suporte */}
+      <Modal
+        animationType="slide"
+        visible={modalContactVisible}
+        onRequestClose={() => setModalContactVisible(false)}
+      >
+        <ContactForm onClose={() => setModalContactVisible(false)} />
+      </Modal>
     </View>
   );
 };
 
-export default UserCard;
+export default Profile;

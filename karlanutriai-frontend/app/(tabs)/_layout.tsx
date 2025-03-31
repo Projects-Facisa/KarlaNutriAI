@@ -27,6 +27,10 @@ export default function TabLayout() {
     return <FullScreenLoader visible />;
   }
 
+  if (!userToken) {
+    return <Redirect href="/welcome" />;
+  }
+
   return (
     <Tabs
       screenOptions={{

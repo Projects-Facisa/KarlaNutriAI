@@ -4,6 +4,7 @@ import UserRouter from "./routes/userRouter.js"
 import NutritionalDataRouter from "./routes/nutritionalDataRouter.js";
 import MealRouter from "./routes/mealRouter.js"
 import chatRouter from "./routes/chatRouter.js";
+import messageRouter from "./routes/messageRouter.js"
 import {tokenValidate} from "./middleware/Auth.js";
 
 
@@ -14,6 +15,7 @@ router.use("/users", UserRouter);
 router.use("/datas", tokenValidate, NutritionalDataRouter);
 router.use("/meals", tokenValidate, MealRouter);
 router.use("/chats", tokenValidate, chatRouter);
+router.use("/messages", tokenValidate, messageRouter);
 
 
 export default router;

@@ -10,7 +10,7 @@ class mealService {
             throw new Error('A refeicao precisa pertencer a um usuario existente');
         }
 
-        const meal = Meal(data);
+        const meal = new Meal(data);
         return await meal.save();
     }
 

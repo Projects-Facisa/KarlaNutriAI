@@ -1,7 +1,7 @@
 import { Redirect, Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import NavigationButton from "@/components/ui/NavigationButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -85,11 +85,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: "Profile",
+          title: "Settings",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" size={30} color={color} />
+            <MaterialIcons name="settings" size={30} color={color} />
           ),
         }}
       />

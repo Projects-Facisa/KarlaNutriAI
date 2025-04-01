@@ -1,46 +1,31 @@
-import Chat from "../models/Chat.js";
+import chatService from "./chatService.js";
 import Message from "../models/Message.js";
 
 class MessageService {
     async createMessage(chatId, { author, content }) {
+        const hasChat = await chatService.getChatById(chatId);
+        console.log(hasChat._id);
+        if (!hasChat) {
+            throw new Error("Chat não encontrado.");
+        }
+        
         const newMessage = new Message({ author, content });
         await newMessage.save();
 
-        const chat = await Chat.findById(chatId);
-        if (!chat) {
-            throw new Error("Chat não encontrado.");
-        }
-
-        await Chat.findByIdAndUpdate(
-            chatId,
-            { $push: { messages: newMessage._id }, updateAt: Date.now() },
-            { new: true }
-        ).populate("messages");
+        await chatService.addMessageToChat(chatId, newMessage._id);
     
         return newMessage;
     }
     
-
-    async updateMessage(messageId, newContent) {
-        const message = await Message.findById(messageId);
-        if (!message) {
-            throw new Error("Mensagem não encontrada.");
+    //GET DE MESSAGES PARA TESTAR SE HA ALGUMA MENSAGEM NO BANCO
+    async getAllMessagesWithoutChatId() {
+        const messages = await Message.find();
+        if (!messages) {
+            throw new Error("Nenhuma mensagem encontrada.");
         }
-
-        message.content = newContent;
-        await message.save();
-        return message;
+        return messages;
     }
-
-    async deleteMessage(messageId) {
-
-        const message = Message.findById(messageId);
-        if(!message) {
-            throw new Error("Não existe mensagem com este ID!")
-        }
-
-        return "mensagem deletada com sucesso: " + message;
-    }
+    
 }
 
 export default new MessageService();

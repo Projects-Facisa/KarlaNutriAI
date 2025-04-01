@@ -9,7 +9,7 @@ class chatService {
     }
 
     async getChatById(id) {
-        const chat = await Chat.findById(id).populate('Message');
+        const chat = await Chat.findById(id).populate('messages');
         if (!chat) {
             throw new Error('Nao ha um chat com este ID!');
         }
@@ -34,6 +34,15 @@ class chatService {
         return await Chat.findByIdAndDelete(chatId);
     }
 
+    async addMessageToChat(chatId, messageId) {
+        await Chat.updateOne(
+            { _id: chatId },
+            { 
+                $push: {messages: messageId },
+                $set: {updateAt: Date.now()} ,
+            }, {new: true}
+        );
+    }
 }
 
 export default new chatService();

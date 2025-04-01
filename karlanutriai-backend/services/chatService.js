@@ -1,4 +1,5 @@
 import Chat from '../models/Chat.js';
+import messageService from './messageService.js';
 
 
 class chatService {
@@ -10,17 +11,11 @@ class chatService {
 
     async getChatById(id) {
         const chat = await Chat.findById(id).populate('messages');
-        if (!chat) {
-            throw new Error('Nao ha um chat com este ID!');
-        }
         return chat;
     }
 
     async getAllChatsByUserId(userId) {
         const chats = await Chat.find({ userId: userId });
-        if (chats.length === 0) {
-            throw new Error('Nao ha nenhum chat cadastrado para esse usuario!');
-        }
         return chats;
     }
 
@@ -31,6 +26,12 @@ class chatService {
     }
 
     async deleteChat(chatId) {
+        const hasChat = await Chat.findById(chatId);
+        if (!hasChat) {
+            throw new Error('Chat nao encontrado!');
+        }
+        // Deletar todas as mensagens associadas ao chat antes de deletar o chat
+        await messageService.deleteAllMessagesByChatId(chatId);
         return await Chat.findByIdAndDelete(chatId);
     }
 

@@ -4,12 +4,11 @@ import Message from "../models/Message.js";
 class MessageService {
     async createMessage(chatId, { author, content }) {
         const hasChat = await chatService.getChatById(chatId);
-        console.log(hasChat._id);
         if (!hasChat) {
             throw new Error("Chat não encontrado.");
         }
         
-        const newMessage = new Message({ author, content });
+        const newMessage = new Message({ author, content, chatId: chatId });
         await newMessage.save();
 
         await chatService.addMessageToChat(chatId, newMessage._id);
@@ -24,6 +23,14 @@ class MessageService {
             throw new Error("Nenhuma mensagem encontrada.");
         }
         return messages;
+    }
+
+    async deleteAllMessagesByChatId(chatId) {
+        try {
+            await Message.deleteMany({ chatId: chatId });
+        } catch (err) {
+            throw new Error("Erro ao deletar mensagens: " + err.message);
+        }
     }
     
 }

@@ -13,6 +13,11 @@ const messageSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    chatId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Chat',
+        required: true,
+    },
 });
 
 const Message = mongoose.model('Message', messageSchema);

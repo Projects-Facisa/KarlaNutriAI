@@ -13,24 +13,10 @@ class MessageController {
         }
     }
 
-    async edit(req, res) {
+    async get(req, res) {
         try {
-            const { messageId } = req.params;
-            const { newContent } = req.body;
-
-            const updatedMessage = await messageService.updateMessage(messageId, newContent);
-            return res.status(200).json(updatedMessage);
-        } catch (error) {
-            return res.status(400).json({ error: error.message });
-        }
-    }
-
-    async delete(req, res) {
-        try {
-            const { messageId } = req.params;
-
-            const response = await messageService.deleteMessage(messageId);
-            return res.status(200).json(response);
+            const messages = await messageService.getAllMessagesWithoutChatId();
+            return res.status(200).json(messages);
         } catch (error) {
             return res.status(400).json({ error: error.message });
         }

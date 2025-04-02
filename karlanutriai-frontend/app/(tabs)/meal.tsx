@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputField from "@/components/ui/InputField";
+import TouchButton from "@/components/ui/TouchButton";
 import {
   useMealContext,
   Meal,
@@ -45,6 +46,7 @@ const MealView = () => {
   const [mealType, setMealType] = useState<MealTypes | "">("");
   const [mealDescription, setMealDescription] = useState("");
   const [mealTypeDropdownVisible, setMealTypeDropdownVisible] = useState(false);
+  const [dayDropdownVisible, setDayDropdownVisible] = useState(false);
   const mealTypes: MealTypes[] = ["Cafe da manha", "Almoco", "Lanche", "Janta"];
   const mealDays: MealDays[] = [
     "Segunda-feira",
@@ -100,7 +102,8 @@ const MealView = () => {
       if (!isUpdateMode) {
         await addMeal(mealData);
       } else if (selectedMeal && selectedMeal._id) {
-        await updateMeal(selectedMeal._id, mealData);
+        const updatedMealData = { ...selectedMeal, ...mealData };
+        await updateMeal(selectedMeal._id, updatedMealData);
       }
       setModalVisible(false);
       resetForm();
@@ -110,16 +113,21 @@ const MealView = () => {
   };
 
   const handleDeleteMeal = async (meal: Meal) => {
-    if (meal._id) {
-      try {
-        await deleteMeal(meal._id);
-        if (selectedMeal && selectedMeal._id === meal._id) {
-          setSelectedMeal(null);
-        }
-      } catch (error) {
-        Alert.alert("Erro", "Não foi possível deletar a meal.");
-      }
-    }
+    Alert.alert("Confirmação", "Deseja realmente deletar a refeição?", [
+      { text: "Não", style: "cancel" },
+      {
+        text: "Sim",
+        onPress: async () => {
+          if (meal._id) {
+            try {
+              await deleteMeal(meal._id);
+            } catch (error) {
+              Alert.alert("Erro", "Não foi possível deletar a refeição.");
+            }
+          }
+        },
+      },
+    ]);
   };
 
   const resetForm = () => {
@@ -130,55 +138,71 @@ const MealView = () => {
     setSelectedDay("Segunda-feira");
   };
 
+  const groupedMeals = meals
+    .sort(
+      (a, b) =>
+        new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+    )
+    .reduce((acc: { date: string; meals: Meal[] }[], meal) => {
+      const dateStr = new Date(meal.creationDate).toLocaleDateString("pt-BR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+      });
+      if (acc.length === 0 || acc[acc.length - 1].date !== dateStr) {
+        acc.push({ date: dateStr, meals: [meal] });
+      } else {
+        acc[acc.length - 1].meals.push(meal);
+      }
+      return acc;
+    }, []);
+
   return (
     <View className="flex-1 bg-[#313338]">
       <View className="flex-row justify-around p-4">
-        <TouchableOpacity
-          onPress={openModalForCreate}
-          className="bg-green-500 p-2 rounded"
-        >
-          <Text className="text-white font-bold">Criar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedMeal) openModalForUpdate(selectedMeal);
-            else Alert.alert("Selecione uma refeição para atualizar.");
-          }}
-          className="bg-yellow-500 p-2 rounded"
-        >
-          <Text className="text-white font-bold">Atualizar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedMeal) handleDeleteMeal(selectedMeal);
-            else Alert.alert("Selecione uma refeição para deletar.");
-          }}
-          className="bg-red-500 p-2 rounded"
-        >
-          <Text className="text-white font-bold">Deletar</Text>
-        </TouchableOpacity>
+        <TouchButton onPress={openModalForCreate} text="Criar"></TouchButton>
       </View>
       <ScrollView className="flex-1 p-4">
-        {meals
-          .slice()
-          .reverse()
-          .map((meal, index) => (
-            <TouchableOpacity
-              key={meal._id || index}
-              onPress={() => setSelectedMeal(meal)}
-              className={`p-4 mb-2 border rounded ${
-                selectedMeal?._id === meal._id
-                  ? "border-[#1e1f22] border-2"
-                  : "border-transparent"
-              }`}
-            >
-              <Text className="text-white font-bold">{meal.type}</Text>
-              <Text className="text-white">{meal.description}</Text>
-              <Text className="text-white text-sm">
-                {new Date().toLocaleDateString("pt-BR")}
-              </Text>
-            </TouchableOpacity>
-          ))}
+        {groupedMeals.map((group, index) => (
+          <View key={index} className="mb-4">
+            <Text className="text-white text-lg font-bold">{group.date}</Text>
+            {group.meals.map((meal) => (
+              <View
+                key={meal._id}
+                className="p-4 mb-2 border rounded bg-[#1e1f22]"
+              >
+                <View className="flex-row justify-between items-center">
+                  <Text className="text-white font-bold">
+                    {meal.type} -{" "}
+                    {new Date(meal.date).toLocaleDateString("pt-BR", {
+                      weekday: "long",
+                    })}
+                  </Text>
+                  <View className="flex-row">
+                    <TouchableOpacity
+                      onPress={() => openModalForUpdate(meal)}
+                      className="mr-2"
+                    >
+                      <MaterialCommunityIcons
+                        name="pencil"
+                        size={20}
+                        color="#F5F5F5"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDeleteMeal(meal)}>
+                      <MaterialCommunityIcons
+                        name="trash-can"
+                        size={20}
+                        color="#F5F5F5"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <Text className="text-white mt-1">{meal.description}</Text>
+              </View>
+            ))}
+          </View>
+        ))}
       </ScrollView>
       <Modal
         animationType="slide"
@@ -190,21 +214,39 @@ const MealView = () => {
           className="bg-[#313338] p-4"
         >
           <Text className="text-2xl font-bold text-white mb-4">
-            {isUpdateMode ? "Atualizar Meal" : "Criar Meal"}
+            {isUpdateMode ? "Atualizar Refeição" : "Criar Refeição"}
           </Text>
-          <View className="mb-4">
-            {mealDays.map((day) => (
-              <TouchableOpacity
-                key={day}
-                onPress={() => setSelectedDay(day)}
-                className={`p-2 border rounded mb-1 ${
-                  selectedDay === day ? "bg-[#1e1f22]" : ""
-                }`}
-              >
-                <Text className="text-white">{day}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <TouchableOpacity
+            onPress={() => setDayDropdownVisible(!dayDropdownVisible)}
+            className="flex-row justify-between items-center border rounded p-2 mb-4"
+          >
+            <Text className="text-white text-2xl">
+              {selectedDay || "Selecione o dia"}
+            </Text>
+            <MaterialCommunityIcons
+              name={dayDropdownVisible ? "chevron-up" : "chevron-down"}
+              size={20}
+              color="#F5F5F5"
+            />
+          </TouchableOpacity>
+          {dayDropdownVisible && (
+            <View className="border rounded mb-4">
+              {mealDays.map((day) => (
+                <TouchableOpacity
+                  key={day}
+                  onPress={() => {
+                    setSelectedDay(day);
+                    setDayDropdownVisible(false);
+                  }}
+                  className={`p-3 border-b last:border-b-0 ${
+                    selectedDay === day ? "bg-[#1e1f22]" : ""
+                  }`}
+                >
+                  <Text className="text-white">{day}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
           <TouchableOpacity
             onPress={() => setMealTypeDropdownVisible(!mealTypeDropdownVisible)}
             className="flex-row justify-between items-center border rounded p-2 mb-4"
@@ -237,6 +279,7 @@ const MealView = () => {
             </View>
           )}
           <InputField
+            className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[330] p-2 my-1 text-[#F5F5F5] bg-[#313338] "
             placeholder="Descrição da Refeição"
             value={mealDescription}
             onChangeText={setMealDescription}

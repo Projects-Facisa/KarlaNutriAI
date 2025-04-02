@@ -16,6 +16,7 @@ export type Meal = {
   type: MealTypes;
   description: string;
   date: Date;
+  creationDate: Date;
   updateAt?: Date;
   userId?: string;
 };
@@ -23,8 +24,13 @@ export type Meal = {
 type MealContextType = {
   meals: Meal[];
   loadMeals: () => Promise<void>;
-  addMeal: (meal: Omit<Meal, "_id" | "updateAt">) => Promise<void>;
-  updateMeal: (id: string, meal: Partial<Meal>) => Promise<void>;
+  addMeal: (
+    meal: Omit<Meal, "_id" | "updateAt" | "creationDate">
+  ) => Promise<void>;
+  updateMeal: (
+    id: string,
+    meal: Partial<Omit<Meal, "creationDate">>
+  ) => Promise<void>;
   deleteMeal: (id: string) => Promise<void>;
 };
 
@@ -53,7 +59,9 @@ export const MealProvider = ({ children }: { children: React.ReactNode }) => {
     loadMeals();
   }, [refreshTrigger]);
 
-  const addMeal = async (meal: Omit<Meal, "_id" | "updateAt">) => {
+  const addMeal = async (
+    meal: Omit<Meal, "_id" | "updateAt" | "creationDate">
+  ) => {
     const exists = meals.some(
       (m) =>
         m.type === meal.type &&
@@ -63,7 +71,8 @@ export const MealProvider = ({ children }: { children: React.ReactNode }) => {
       throw new Error(`Já existe ${meal.type} cadastrado para esse dia!`);
     }
     try {
-      await httpService.post("meals", meal);
+      const newMeal = { ...meal, creationDate: new Date() }; // Adiciona creationDate automaticamente
+      await httpService.post("meals", newMeal);
       setRefreshTrigger((prev) => prev + 1);
     } catch (error) {
       console.error("Erro ao adicionar meal:", error);
@@ -71,7 +80,10 @@ export const MealProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const updateMeal = async (id: string, meal: Partial<Meal>) => {
+  const updateMeal = async (
+    id: string,
+    meal: Partial<Omit<Meal, "creationDate">>
+  ) => {
     const conflict = meals.find(
       (m) =>
         m._id !== id &&
@@ -83,7 +95,7 @@ export const MealProvider = ({ children }: { children: React.ReactNode }) => {
       throw new Error(`Já existe ${meal.type} cadastrado para esse dia!`);
     }
     try {
-      await httpService.put(`meals/${id}`, meal);
+      await httpService.put(`meals/${id}`, meal); // creationDate não é incluído nos dados atualizados
       setRefreshTrigger((prev) => prev + 1);
     } catch (error) {
       console.error("Erro ao atualizar meal:", error);

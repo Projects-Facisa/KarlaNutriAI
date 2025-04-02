@@ -30,7 +30,7 @@ class AuthController {
 
             // Generate JWT token
             const token = jwt.sign(
-                {id: user._id, name: user.name},
+                {id: user._id, name: user.name, email: user.email},
                 process.env.JWT_ACCESS_SECRET,
                 {expiresIn: process.env.JWT_EXPIRES}
             );
@@ -45,8 +45,8 @@ class AuthController {
     async displayHome(req, res) {
         try {
             const {userData} = req.headers;
-            const hasNutritionalData = userService.hasNutritionalData(userData.id)
-            return res.status(200).json({display: !!hasNutritionalData})
+            const hasNutritionalData = userService.hasNutritionalData(userData.id);
+            return res.status(200).json({display: !!hasNutritionalData});
         } catch (error) {
             return res.status(400).json({error: error.message});
         }

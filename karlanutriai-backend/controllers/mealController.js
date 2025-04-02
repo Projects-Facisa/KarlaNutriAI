@@ -52,8 +52,13 @@ class MealController {
             const data = req.body;
             const mealId = req.params.id;
             const updateAt = Date.now();
-
-
+            const userIdLogado = req.headers.userData;
+            const mealUserId = await mealService.getMealById(mealId)
+          
+            if (mealUserId.userId != userIdLogado.id) {
+                return res.status(403).json({ message: 'Você não tem permissão para editar essa refeição' });
+            }
+            
             const newMeal = {
                 ...data,
                 updateAt: updateAt
@@ -72,6 +77,12 @@ class MealController {
     async delete(req, res) {
         try {
             const mealId = req.params.id;
+
+            const userIdLogado = req.headers.userData;
+            const mealUserId = await mealService.getMealById(mealId)
+            if (mealUserId.userId != userIdLogado.id) {
+                return res.status(403).json({ message: 'Você não tem permissão para deletar essa refeição' });
+            }
 
             const meal = await mealService.deleteMeal(mealId);
             return res.status(201).json(meal)

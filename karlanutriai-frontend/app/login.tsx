@@ -8,10 +8,11 @@ import AuthButton from "../components/ui/AuthButton";
 import "../global.css";
 import httpService from "./services/httpServices";
 import * as SecureStore from "expo-secure-store";
-
+import { useLoader } from "@/contexts/UseLoadingContext";
 const Login = () => {
   const router = useRouter();
 
+  const { loading, loadingIsTrue, loadingIsFalse } = useLoader();
   const [email, setEmail] = useState({ value: "", dirty: false });
   const [senha, setSenha] = useState({ value: "", dirty: false });
   const [loginError, setLoginError] = useState("");
@@ -69,29 +70,25 @@ const Login = () => {
     };
 
     try {
+      loadingIsTrue();
       const loginProductUrl = `auths/signin`;
       const response = await httpService.post(loginProductUrl, data);
 
-      // Extraindo o token da resposta
       const token = response.data.token;
-
-      // Armazenando o token de forma segura
       await SecureStore.setItemAsync("userToken", token);
 
-      // Redireciona para a home
+      loadingIsFalse();
       router.replace("/home");
     } catch (error: any) {
+      loadingIsFalse();
       if (error.response) {
-        // Se a resposta do backend for um erro set o loginError com a mensagem de erro
         const errorMessage = error.response.data.error || "Erro desconhecido";
-        setLoginError(errorMessage); // Atualizando o estado com a mensagem de erro
+        setLoginError(errorMessage);
       } else {
-        // Se o erro for na url
         setLoginError("Erro de rede. Verifique sua conexão.");
       }
     }
   };
-
   return (
     <View className="flex-1 justify-center items-center bg-[#313338] p-5">
       <View className="bg-[#1e1f22] p-[30] rounded-lg items-center w-full max-w-[500px]">

@@ -62,7 +62,9 @@ const UserProfile = ({ onClose }: { onClose: () => void }) => {
       setTelefone((prev) => ({ value: formattedValue, dirty: prev.dirty }));
       if (!regexTelefone.test(formattedValue)) {
         setProfileError("Tente por o formato (XX) (9XXXX-XXXX)");
-      }
+      } 
+    } else if (field === "senha") {
+      setSenha((prev) => ({ value, dirty: prev.dirty }));
     }
   };
 
@@ -73,6 +75,8 @@ const UserProfile = ({ onClose }: { onClose: () => void }) => {
       setEmail((prev) => ({ ...prev, dirty: true }));
     } else if (field === "telefone") {
       setTelefone((prev) => ({ ...prev, dirty: true }));
+    } else if (field === "senha") {
+      setSenha((prev) => ({ ...prev, dirty: true }));
     }
   };
 

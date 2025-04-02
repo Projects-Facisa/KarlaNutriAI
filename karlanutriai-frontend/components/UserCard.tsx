@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputField from "@/components/ui/InputField";
@@ -26,7 +26,6 @@ const formatDateInput = (text: string) => {
   const day = cleaned.slice(0, 2);
   const month = cleaned.slice(2, 4);
   const year = cleaned.slice(4, 8);
-
   let formatted = day;
   if (month) formatted += `/${month}`;
   if (year) formatted += `/${year}`;
@@ -47,6 +46,8 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
   const [dropdownGordura, setDropdownGordura] = useState(false);
   const [dropdownMetabolismo, setDropdownMetabolismo] = useState(false);
 
+  const [hasData, setHasData] = useState(false);
+
   const [bodyFatPercentage, setBodyFatPercentage] = useState<BodyFatOption>(
     "Alto percentual de massa muscular"
   );
@@ -59,6 +60,40 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
   const [profession, setProfession] = useState("");
   const [meta, setMeta] = useState<MetaOption>("Manter peso");
   const [allergy, setAllergy] = useState("");
+
+  useEffect(() => {
+    const fetchNutritionalData = async () => {
+      try {
+        const response = await httpService.get("/datas");
+        const data = response.data;
+
+        if (data) {
+          setHasData(true);
+          setHeight(data.height.toString());
+          setWeight(data.weight.toString());
+          setProfession(data.profession || "");
+          setAllergy(data.allergy?.join(", ") || "");
+          setBodyFatPercentage(data.bodyFatPercentage);
+          setMetabolicRate(data.metabolicRate);
+          setMeta(data.goal);
+
+          const birth = new Date(data.birthDate);
+          const formattedBirthDate = birth
+            .toLocaleDateString("pt-BR")
+            .replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$1/$2/$3");
+
+          setBirthDate(formattedBirthDate);
+        }
+      } catch (error: any) {
+        console.log(
+          "Nenhum dado nutricional encontrado ou erro:",
+          error.message
+        );
+      }
+    };
+
+    fetchNutritionalData();
+  }, []);
 
   const handleSaveCardData = async () => {
     const formattedData = {
@@ -75,11 +110,18 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
     };
 
     try {
-      await httpService.post("/datas", formattedData);
-      if (onSave) {
-        onSave(formattedData);
+      if (hasData) {
+        await httpService.put("/datas", formattedData);
+      } else {
+        await httpService.post("/datas", formattedData);
       }
-      Alert.alert("Sucesso", "Dados salvos com sucesso!");
+
+      if (onSave) onSave(formattedData);
+
+      Alert.alert(
+        "Sucesso",
+        hasData ? "Dados atualizados!" : "Dados salvos com sucesso!"
+      );
       onClose();
     } catch (error: any) {
       console.error(
@@ -88,6 +130,38 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
       );
       Alert.alert("Erro", "Não foi possível salvar os dados.");
     }
+  };
+
+  const handleDeleteCardData = async () => {
+    Alert.alert(
+      "Confirmar exclusão",
+      "Tem certeza que deseja apagar os dados?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Apagar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await httpService.delete("/datas");
+              setHasData(false);
+              setBirthDate("");
+              setHeight("");
+              setWeight("");
+              setProfession("");
+              setAllergy("");
+              setBodyFatPercentage("Alto percentual de massa muscular");
+              setMetabolicRate("Metabolismo acelerado (perco peso facilmente)");
+              setMeta("Manter peso");
+              Alert.alert("Sucesso", "Dados apagados com sucesso!");
+            } catch (error: any) {
+              console.error("Erro ao apagar dados:", error.message);
+              Alert.alert("Erro", "Erro ao apagar dados.");
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -109,27 +183,23 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
               value={birthDate}
               onChangeText={(text) => setBirthDate(formatDateInput(text))}
             />
-
             <InputField
               placeholder="Altura (m)"
               value={height}
               onChangeText={setHeight}
               keyboardType="numeric"
             />
-
             <InputField
               placeholder="Peso (kg)"
               value={weight}
               onChangeText={setWeight}
               keyboardType="numeric"
             />
-
             <InputField
               placeholder="Sua profissão"
               value={profession}
               onChangeText={setProfession}
             />
-
             <InputField
               placeholder="Alergias (separadas por vírgula)"
               value={allergy}
@@ -151,18 +221,16 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
             </TouchableOpacity>
             {dropdownGordura && (
               <View className="border border-gray-300 rounded-md mt-1">
-                {(
-                  [
-                    "Alto percentual de massa muscular",
-                    "Equilíbrio entre massa muscular e gordura",
-                    "Alto percentual de gordura corporal",
-                    "Não sei",
-                  ] as BodyFatOption[]
-                ).map((option) => (
+                {[
+                  "Alto percentual de massa muscular",
+                  "Equilíbrio entre massa muscular e gordura",
+                  "Alto percentual de gordura corporal",
+                  "Não sei",
+                ].map((option) => (
                   <TouchableOpacity
                     key={option}
                     onPress={() => {
-                      setBodyFatPercentage(option);
+                      setBodyFatPercentage(option as BodyFatOption);
                       setDropdownGordura(false);
                     }}
                     className={`p-3 border-b last:border-b-0 ${
@@ -190,17 +258,15 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
             </TouchableOpacity>
             {dropdownMetabolismo && (
               <View className="border border-gray-300 rounded-md mt-1">
-                {(
-                  [
-                    "Metabolismo acelerado (perco peso facilmente)",
-                    "Metabolismo moderado (peso estável com facilidade)",
-                    "Metabolismo mais lento (tenho tendência a ganhar peso)",
-                  ] as MetabolicRateOption[]
-                ).map((option) => (
+                {[
+                  "Metabolismo acelerado (perco peso facilmente)",
+                  "Metabolismo moderado (peso estável com facilidade)",
+                  "Metabolismo mais lento (tenho tendência a ganhar peso)",
+                ].map((option) => (
                   <TouchableOpacity
                     key={option}
                     onPress={() => {
-                      setMetabolicRate(option);
+                      setMetabolicRate(option as MetabolicRateOption);
                       setDropdownMetabolismo(false);
                     }}
                     className={`p-3 border-b last:border-b-0 ${
@@ -228,13 +294,11 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
             </TouchableOpacity>
             {dropdownMeta && (
               <View className="border border-gray-300 rounded-md mt-1">
-                {(
-                  ["Manter peso", "Perder peso", "Ganhar peso"] as MetaOption[]
-                ).map((option) => (
+                {["Manter peso", "Perder peso", "Ganhar peso"].map((option) => (
                   <TouchableOpacity
                     key={option}
                     onPress={() => {
-                      setMeta(option);
+                      setMeta(option as MetaOption);
                       setDropdownMeta(false);
                     }}
                     className={`p-3 border-b last:border-b-0 ${
@@ -248,10 +312,19 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
             )}
 
             <TouchableOpacity onPress={handleSaveCardData}>
-              <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-3 rounded-lg text-2xl">
-                Salvar Dados do Card
+              <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-2 rounded-lg text-2xl">
+                {hasData ? "Atualizar Dados do Card" : "Salvar Dados do Card"}
               </Text>
             </TouchableOpacity>
+
+            {hasData && (
+              <TouchableOpacity onPress={handleDeleteCardData}>
+                <Text className="text-white bg-red-600 w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
+                  Apagar Dados do Card
+                </Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity onPress={onClose} className="p-4 items-center">
               <Text className="text-[#F5F5F5]">Voltar</Text>
             </TouchableOpacity>

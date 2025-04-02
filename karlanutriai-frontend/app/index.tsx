@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import * as Font from "expo-font";
 import FullScreenLoader from "@/components/FullScreenLoader";
 import useAuthToken from "../hooks/useAuthToken";
+import * as SystemUI from "expo-system-ui";
 
 export default function Index() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     async function loadFonts() {
+      SystemUI.setBackgroundColorAsync("#313338");
       await Font.loadAsync({
         "Poppins-MediumItalic": require("../assets/fonts/Poppins-MediumItalic.ttf"),
       });

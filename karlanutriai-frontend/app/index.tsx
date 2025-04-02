@@ -1,7 +1,6 @@
 import { Redirect } from "expo-router";
 import { useState, useEffect } from "react";
 import * as Font from "expo-font";
-import * as SecureStore from "expo-secure-store";
 import FullScreenLoader from "@/components/FullScreenLoader";
 import useAuthToken from "../hooks/useAuthToken";
 

@@ -1,16 +1,29 @@
-import React, { useState } from "react";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import InputField from "@/components/ui/InputField";
 import "../global.css";
-import TouchButton from "./ui/TouchButton";
-import * as SecureStore from "expo-secure-store";
-import { router } from "expo-router";
+import httpService from "@/app/services/httpServices";
 
 type UserProfileProps = {
   onClose: () => void;
 };
 
 const regexEmail = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+const regexTelefone = /^\(?[1-9]{2}\)?\s?[9]{0,1}[0-9]{4}-?[0-9]{4}$/;
+
+const formatTelefone = (value: string): string => {
+  const cleaned = value.replace(/\D/g, "");
+  if (cleaned.length <= 2) {
+    return `(${cleaned}`;
+  } else if (cleaned.length <= 7) {
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+  } else {
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(
+      7,
+      11
+    )}`;
+  }
+};
 
 const UserProfile = ({ onClose }: UserProfileProps) => {
   const [nome, setNome] = useState({ value: "", dirty: false });
@@ -19,11 +32,6 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
   const [telefone, setTelefone] = useState({ value: "", dirty: false });
   const [profileError, setProfileError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-
-  const handleLogout = async () => {
-    await SecureStore.deleteItemAsync("userToken");
-    router.replace("/welcome");
-  };
 
   const handleInputChange = (
     field: "nome" | "email" | "senha" | "telefone",
@@ -37,7 +45,10 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
     } else if (field === "senha") {
       setSenha((prev) => ({ value, dirty: prev.dirty }));
     } else if (field === "telefone") {
-      setTelefone((prev) => ({ value, dirty: prev.dirty }));
+      setTelefone((prev) => ({
+        value: formatTelefone(value),
+        dirty: prev.dirty,
+      }));
     }
   };
 
@@ -60,23 +71,65 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
     if (!data.value && data.dirty) {
       return "Campo obrigatório!";
     }
-    if (type === "email" && !regexEmail.test(data.value) && data.dirty) {
+    if (type === "email" && data.dirty && !regexEmail.test(data.value)) {
       return "Tente por o formato seunome@mail.com";
+    } else if (
+      type === "telefone" &&
+      data.dirty &&
+      !regexTelefone.test(data.value)
+    ) {
+      return "Tente por o formato (XX) (9XXXX-XXXX)";
     }
     return null;
   };
 
-  const handleSaveProfile = () => {
-    if (!nome.value || !email.value || !senha.value || !telefone.value) {
-      setProfileError("Preencha todos os campos obrigatórios!");
-      return;
+  // Função GET para carregar os dados do perfil
+  const handleGetProfile = async () => {
+    try {
+      const getProfileUrl = `/users`;
+      const response = await httpService.get(getProfileUrl);
+      const { name, email, tel } = response.data.user;
+
+      setNome({ value: name, dirty: false });
+      setEmail({ value: email, dirty: false });
+      setTelefone({ value: tel ? formatTelefone(tel) : "", dirty: false });
+    } catch (error: any) {
+      console.error("Erro ao buscar perfil:", error);
+      if (error.response) {
+        setProfileError(error.response.data.error || "Erro desconhecido");
+      } else {
+        setProfileError("Erro de rede. Verifique sua conexão.");
+      }
     }
-    if (!regexEmail.test(email.value)) {
-      setProfileError("E-mail inválido!");
-      return;
+  };
+
+  // Carrega os dados do perfil ao montar o componente para visualização
+  useEffect(() => {
+    if (!isEditing) {
+      handleGetProfile();
     }
-    Alert.alert("Perfil", "Dados do perfil salvos!");
-    setIsEditing(false);
+  }, [isEditing]);
+
+  const handleSaveProfile = async () => {
+    const data = {
+      name: nome.value,
+      email: email.value,
+      password: senha.value,
+      tel: telefone.value,
+    };
+
+    try {
+      const updateProfileUrl = "/users";
+      await httpService.put(updateProfileUrl, data);
+      // FEEDBACK COM TOASTIFY A SER ADICIONADO
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage = error.response.data.error || "Erro desconhecido";
+        setProfileError(errorMessage);
+      } else {
+        setProfileError("Erro de rede. Verifique sua conexão.");
+      }
+    }
   };
 
   return (
@@ -143,7 +196,7 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
               )}
 
               {profileError ? (
-                <Text className="text-red-500 text-sm mt-2 self-start text-center font-poppins">
+                <Text className="text-red-500 text-sm mt-1 ml-2 self-start text-center font-poppins">
                   {profileError}
                 </Text>
               ) : null}
@@ -174,19 +227,24 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
                 {email.value || "email@exemplo.com"}
               </Text>
               <Text className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
-                {senha.value ? "••••••" : "Senha"}
-              </Text>
-              <Text className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
                 {telefone.value || "(XX) XXXXX-XXXX"}
               </Text>
-              <TouchableOpacity onPress={() => setIsEditing(true)}>
+              <TouchableOpacity
+                onPress={() => {
+                  // Ao entrar no editar perfil, reseta os campos para exibir apenas os placeholders
+                  setIsEditing(true);
+                  setNome({ value: "", dirty: false });
+                  setEmail({ value: "", dirty: false });
+                  setSenha({ value: "", dirty: false });
+                  setTelefone({ value: "", dirty: false });
+                }}
+              >
                 <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
                   Editar Perfil
                 </Text>
               </TouchableOpacity>
-              <TouchButton onPress={handleLogout} text="Logout" />
               <TouchableOpacity onPress={onClose} className="p-4 items-center">
-                <Text className="text-[#F5F5F5]">Fechar</Text>
+                <Text className="text-[#F5F5F5]">Voltar</Text>
               </TouchableOpacity>
             </View>
           </View>

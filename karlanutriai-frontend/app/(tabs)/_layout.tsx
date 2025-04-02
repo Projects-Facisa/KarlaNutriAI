@@ -6,7 +6,6 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import NavigationButton from "@/components/ui/NavigationButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
-import * as SecureStore from "expo-secure-store";
 import FullScreenLoader from "@/components/FullScreenLoader";
 import useAuthToken from "../../hooks/useAuthToken";
 

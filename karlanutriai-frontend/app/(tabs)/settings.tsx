@@ -5,6 +5,7 @@ import UserProfile from "@/components/UserProfile";
 import UserCard from "@/components/UserCard";
 import { useRouter } from "expo-router";
 import "../../global.css";
+import * as SecureStore from "expo-secure-store";
 
 const Settings = () => {
   const router = useRouter();
@@ -12,6 +13,11 @@ const Settings = () => {
   const [modalProfileVisible, setModalProfileVisible] = useState(false);
   const [modalCardVisible, setModalCardVisible] = useState(false);
   const [modalContactVisible, setModalContactVisible] = useState(false);
+
+  const handleLogout = async () => {
+    await SecureStore.deleteItemAsync("userToken");
+    router.replace("/welcome");
+  };
 
   return (
     <View className="flex-1 justify-center items-center bg-[#313338]">
@@ -55,6 +61,9 @@ const Settings = () => {
             <Text className="text-[#F5F5F5]">
               Entre em contato com o suporte técnico
             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout} className="p-4 items-center">
+            <Text className="text-[#F5F5F5]">Logout</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

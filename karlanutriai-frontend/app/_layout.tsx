@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { LoadingProvider } from "@/contexts/LoadingContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -32,15 +33,17 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="welcome" options={{ headerShown: false }} />
-      <Stack.Screen name="login" options={{ headerShown: false }} />
-      <Stack.Screen name="register" options={{ headerShown: false }} />
-      <Stack.Screen name="home" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)/support" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)/userCard" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)/chat" options={{ headerShown: false }} />
-    </Stack>
+    <LoadingProvider>
+      <Stack>
+        <Stack.Screen name="welcome" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="register" options={{ headerShown: false }} />
+        <Stack.Screen name="home" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)/support" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)/userCard" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)/chat" options={{ headerShown: false }} />
+      </Stack>
+    </LoadingProvider>
   );
 }

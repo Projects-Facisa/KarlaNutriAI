@@ -14,6 +14,8 @@ import {
   MealDays,
 } from "@/contexts/MealContext";
 import "../../global.css";
+import { useLoader } from "@/contexts/UseLoadingContext";
+import FullScreenLoader from "@/components/FullScreenLoader";
 
 const mealOrder: MealTypes[] = ["Cafe da manha", "Almoco", "Lanche", "Janta"];
 
@@ -35,6 +37,7 @@ const getPortugueseDay = (dateInput: string | Date): MealDays => {
 const Home = () => {
   const { meals } = useMealContext();
   const [expandedDay, setExpandedDay] = useState<MealDays | "">("");
+  const { loading, loadingIsTrue, loadingIsFalse } = useLoader();
 
   useEffect(() => {}, [meals]);
 
@@ -58,7 +61,9 @@ const Home = () => {
     "Domingo",
   ];
 
-  return (
+  return loading ? (
+    <FullScreenLoader visible={true} />
+  ) : (
     <View className="flex-1 items-center bg-[#313338]">
       <ScrollView
         contentContainerStyle={{

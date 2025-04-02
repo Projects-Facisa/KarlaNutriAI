@@ -1,5 +1,6 @@
 import React from "react";
-import { Modal, View, ActivityIndicator } from "react-native";
+import { Modal, View, StyleSheet } from "react-native";
+import LottieView from "lottie-react-native";
 
 interface FullScreenLoaderProps {
   visible: boolean;
@@ -7,12 +8,30 @@ interface FullScreenLoaderProps {
 
 const FullScreenLoader: React.FC<FullScreenLoaderProps> = ({ visible }) => {
   return (
-    <Modal transparent visible={visible} animationType="fade">
-      <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-        <ActivityIndicator size="large" color="#fff" />
+    <Modal transparent={false} visible={visible} animationType="fade">
+      <View style={styles.container}>
+        <LottieView
+          source={require("../assets/animations/Animation - 23.json")}
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#313338",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  lottie: {
+    width: 100,
+    height: 100,
+  },
+});
 
 export default FullScreenLoader;

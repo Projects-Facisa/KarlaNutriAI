@@ -11,6 +11,7 @@ import FullScreenLoader from "@/components/FullScreenLoader";
 import useAuthToken from "../../hooks/useAuthToken";
 
 import { MealProvider } from "@/contexts/MealContext";
+import { LoadingProvider } from "@/contexts/LoadingContext";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();

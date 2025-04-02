@@ -121,7 +121,8 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
     try {
       const updateProfileUrl = "/users";
       await httpService.put(updateProfileUrl, data);
-      // FEEDBACK COM TOASTIFY A SER ADICIONADO
+      alert("Perfil salvo com sucesso!");
+      setIsEditing(false);
     } catch (error: any) {
       if (error.response) {
         const errorMessage = error.response.data.error || "Erro desconhecido";

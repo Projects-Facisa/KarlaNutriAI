@@ -3,10 +3,7 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import InputField from "@/components/ui/InputField";
 import "../global.css";
 import httpService from "@/app/services/httpServices";
-
-type UserProfileProps = {
-  onClose: () => void;
-};
+import { useUser } from "@/contexts/UserContext";
 
 const regexEmail = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 const regexTelefone = /^\(?[1-9]{2}\)?\s?[9]{0,1}[0-9]{4}-?[0-9]{4}$/;
@@ -25,13 +22,25 @@ const formatTelefone = (value: string): string => {
   }
 };
 
-const UserProfile = ({ onClose }: UserProfileProps) => {
+const UserProfile = ({ onClose }: { onClose: () => void }) => {
+  const { user, fetchUser } = useUser();
   const [nome, setNome] = useState({ value: "", dirty: false });
   const [email, setEmail] = useState({ value: "", dirty: false });
   const [senha, setSenha] = useState({ value: "", dirty: false });
   const [telefone, setTelefone] = useState({ value: "", dirty: false });
   const [profileError, setProfileError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (user && !isEditing) {
+      setNome({ value: user.name, dirty: false });
+      setEmail({ value: user.email, dirty: false });
+      setTelefone({
+        value: user.tel ? formatTelefone(user.tel) : "",
+        dirty: false,
+      });
+    }
+  }, [user, isEditing]);
 
   const handleInputChange = (
     field: "nome" | "email" | "senha" | "telefone",
@@ -52,64 +61,6 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
     }
   };
 
-  const handleBlur = (field: "nome" | "email" | "senha" | "telefone") => {
-    if (field === "nome") {
-      setNome((prev) => ({ ...prev, dirty: true }));
-    } else if (field === "email") {
-      setEmail((prev) => ({ ...prev, dirty: true }));
-    } else if (field === "senha") {
-      setSenha((prev) => ({ ...prev, dirty: true }));
-    } else if (field === "telefone") {
-      setTelefone((prev) => ({ ...prev, dirty: true }));
-    }
-  };
-
-  const validateField = (
-    data: { value: string; dirty: boolean },
-    type: string
-  ) => {
-    if (!data.value && data.dirty) {
-      return "Campo obrigatório!";
-    }
-    if (type === "email" && data.dirty && !regexEmail.test(data.value)) {
-      return "Tente por o formato seunome@mail.com";
-    } else if (
-      type === "telefone" &&
-      data.dirty &&
-      !regexTelefone.test(data.value)
-    ) {
-      return "Tente por o formato (XX) (9XXXX-XXXX)";
-    }
-    return null;
-  };
-
-  // Função GET para carregar os dados do perfil
-  const handleGetProfile = async () => {
-    try {
-      const getProfileUrl = `/users`;
-      const response = await httpService.get(getProfileUrl);
-      const { name, email, tel } = response.data.user;
-
-      setNome({ value: name, dirty: false });
-      setEmail({ value: email, dirty: false });
-      setTelefone({ value: tel ? formatTelefone(tel) : "", dirty: false });
-    } catch (error: any) {
-      console.error("Erro ao buscar perfil:", error);
-      if (error.response) {
-        setProfileError(error.response.data.error || "Erro desconhecido");
-      } else {
-        setProfileError("Erro de rede. Verifique sua conexão.");
-      }
-    }
-  };
-
-  // Carrega os dados do perfil ao montar o componente para visualização
-  useEffect(() => {
-    if (!isEditing) {
-      handleGetProfile();
-    }
-  }, [isEditing]);
-
   const handleSaveProfile = async () => {
     const data = {
       name: nome.value,
@@ -119,14 +70,13 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
     };
 
     try {
-      const updateProfileUrl = "/users";
-      await httpService.put(updateProfileUrl, data);
+      await httpService.put("/users", data);
       alert("Perfil salvo com sucesso!");
       setIsEditing(false);
+      await fetchUser();
     } catch (error: any) {
       if (error.response) {
-        const errorMessage = error.response.data.error || "Erro desconhecido";
-        setProfileError(errorMessage);
+        setProfileError(error.response.data.error || "Erro desconhecido");
       } else {
         setProfileError("Erro de rede. Verifique sua conexão.");
       }
@@ -149,59 +99,28 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
                 placeholder="Nome"
                 value={nome.value}
                 onChangeText={(value) => handleInputChange("nome", value)}
-                onBlur={() => handleBlur("nome")}
               />
-              {validateField(nome, "nome") && nome.dirty && (
-                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
-                  {validateField(nome, "nome")}
-                </Text>
-              )}
-
               <InputField
                 placeholder="Email"
                 value={email.value}
                 onChangeText={(value) => handleInputChange("email", value)}
-                onBlur={() => handleBlur("email")}
-                keyboardType="email-address"
-                autoCapitalize="none"
               />
-              {validateField(email, "email") && email.dirty && (
-                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
-                  {validateField(email, "email")}
-                </Text>
-              )}
-
               <InputField
                 placeholder="Senha"
                 value={senha.value}
                 onChangeText={(value) => handleInputChange("senha", value)}
-                onBlur={() => handleBlur("senha")}
-                secureTextEntry={true}
+                secureTextEntry
               />
-              {validateField(senha, "senha") && senha.dirty && (
-                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
-                  {validateField(senha, "senha")}
-                </Text>
-              )}
-
               <InputField
                 placeholder="Telefone"
                 value={telefone.value}
                 onChangeText={(value) => handleInputChange("telefone", value)}
-                onBlur={() => handleBlur("telefone")}
               />
-              {validateField(telefone, "telefone") && telefone.dirty && (
-                <Text className="text-red-500 text-sm self-start ml-2 mt-1 font-poppins">
-                  {validateField(telefone, "telefone")}
-                </Text>
-              )}
-
               {profileError ? (
-                <Text className="text-red-500 text-sm mt-1 ml-2 self-start text-center font-poppins">
+                <Text className="text-red-500 text-sm mt-1 ml-2 self-start">
                   {profileError}
                 </Text>
               ) : null}
-
               <TouchableOpacity onPress={handleSaveProfile}>
                 <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
                   Salvar Perfil
@@ -222,17 +141,16 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
             </Text>
             <View className="w-full max-w-[300px]">
               <Text className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
-                {nome.value || "Nome"}
+                {user?.name || "Nome"}
               </Text>
               <Text className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
-                {email.value || "email@exemplo.com"}
+                {user?.email || "email@exemplo.com"}
               </Text>
               <Text className="text-2xl border-2 border-[#1e1f22] rounded-lg w-[300px] p-2 my-1 text-[#F5F5F5]">
-                {telefone.value || "(XX) XXXXX-XXXX"}
+                {user?.tel || "(XX) XXXXX-XXXX"}
               </Text>
               <TouchableOpacity
                 onPress={() => {
-                  // Ao entrar no editar perfil, reseta os campos para exibir apenas os placeholders
                   setIsEditing(true);
                   setNome({ value: "", dirty: false });
                   setEmail({ value: "", dirty: false });

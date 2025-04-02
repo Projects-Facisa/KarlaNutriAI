@@ -3,6 +3,7 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import InputField from "@/components/ui/InputField";
 import "../global.css";
 import httpService from "@/app/services/httpServices";
+import { useLoader } from "@/contexts/UseLoadingContext";
 
 type UserProfileProps = {
   onClose: () => void;
@@ -32,6 +33,7 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
   const [telefone, setTelefone] = useState({ value: "", dirty: false });
   const [profileError, setProfileError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const { loading, loadingIsTrue, loadingIsFalse } = useLoader();
 
   const handleInputChange = (
     field: "nome" | "email" | "senha" | "telefone",
@@ -119,16 +121,20 @@ const UserProfile = ({ onClose }: UserProfileProps) => {
     };
 
     try {
+      loadingIsTrue();
       const updateProfileUrl = "/users";
       await httpService.put(updateProfileUrl, data);
       alert("Perfil salvo com sucesso!");
       setIsEditing(false);
+      loadingIsFalse();
     } catch (error: any) {
       if (error.response) {
         const errorMessage = error.response.data.error || "Erro desconhecido";
         setProfileError(errorMessage);
+        loadingIsFalse();
       } else {
         setProfileError("Erro de rede. Verifique sua conexão.");
+        loadingIsFalse();
       }
     }
   };

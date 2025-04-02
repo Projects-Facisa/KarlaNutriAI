@@ -21,6 +21,26 @@ Fique ciente de que sempre que for citado o token com `TRUE` neste arquivo, se r
 
 Toda propriedade com tipo `string` e contendo um `enum` deve receber **APENAS UM** dos valores contidos nesse enum.
 
+## MAIL
+
+> BASE_URL: `http://"endereco_ip":5000/mails`
+
+-   **FOR SUPPORT** -> METODO: `POST` | URL:
+
+    > **TOKEN:** `TRUE`
+    >
+    > **UTILIDADE:** Envia um email de novo ticket para o support
+    >
+    > **INPUT** - Recebe um objeto com as seguintes propriedades:
+    >
+    > -   `type: {type: String}`
+    > -   `description: {type: String}`
+    >
+    > -   `userData.email & userData.name` -> retirados do token
+
+    > **RETORNO:** `STATUS: 201 | JSON: e-mail id`
+
+
 ## USER
 
 > BASE_URL: `http://"endereco_ip":5000/users`

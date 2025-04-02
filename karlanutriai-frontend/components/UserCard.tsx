@@ -1,28 +1,93 @@
 import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputField from "@/components/ui/InputField";
+import httpService from "@/app/services/httpServices";
 import "../global.css";
 
 type MetaOption = "Manter peso" | "Perder peso" | "Ganhar peso";
+type BodyFatOption =
+  | "Alto percentual de massa muscular"
+  | "Equilíbrio entre massa muscular e gordura"
+  | "Alto percentual de gordura corporal"
+  | "Não sei";
+type MetabolicRateOption =
+  | "Metabolismo acelerado (perco peso facilmente)"
+  | "Metabolismo moderado (peso estável com facilidade)"
+  | "Metabolismo mais lento (tenho tendência a ganhar peso)";
 
 type UserCardProps = {
   onClose: () => void;
+  onSave?: (data: any) => void;
 };
 
-const UserCard = ({ onClose }: UserCardProps) => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [percentualGordura, setPercentualGordura] = useState("");
-  const [taxaMetabolica, setTaxaMetabolica] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
-  const [altura, setAltura] = useState("");
-  const [peso, setPeso] = useState("");
-  const [profissao, setProfissao] = useState("");
-  const [meta, setMeta] = useState<MetaOption>("Manter peso");
-  const [alergia, setAlergia] = useState("");
+const formatDateInput = (text: string) => {
+  const cleaned = text.replace(/\D/g, "");
+  const day = cleaned.slice(0, 2);
+  const month = cleaned.slice(2, 4);
+  const year = cleaned.slice(4, 8);
 
-  const handleSaveCardData = () => {
-    onClose();
+  let formatted = day;
+  if (month) formatted += `/${month}`;
+  if (year) formatted += `/${year}`;
+  return formatted;
+};
+
+const parseFormattedDate = (formatted: string): Date | null => {
+  const [day, month, year] = formatted.split("/");
+  if (!day || !month || !year) return null;
+  return new Date(`${year}-${month}-${day}`);
+};
+
+const parseFloatFlexible = (value: string): number =>
+  parseFloat(value.replace(",", "."));
+
+const UserCard = ({ onClose, onSave }: UserCardProps) => {
+  const [dropdownMeta, setDropdownMeta] = useState(false);
+  const [dropdownGordura, setDropdownGordura] = useState(false);
+  const [dropdownMetabolismo, setDropdownMetabolismo] = useState(false);
+
+  const [bodyFatPercentage, setBodyFatPercentage] = useState<BodyFatOption>(
+    "Alto percentual de massa muscular"
+  );
+  const [metabolicRate, setMetabolicRate] = useState<MetabolicRateOption>(
+    "Metabolismo acelerado (perco peso facilmente)"
+  );
+  const [birthDate, setBirthDate] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [profession, setProfession] = useState("");
+  const [meta, setMeta] = useState<MetaOption>("Manter peso");
+  const [allergy, setAllergy] = useState("");
+
+  const handleSaveCardData = async () => {
+    const formattedData = {
+      birthDate: parseFormattedDate(birthDate),
+      height: parseFloatFlexible(height),
+      weight: parseFloatFlexible(weight),
+      allergy: allergy
+        ? allergy.split(",").map((a) => a.trim())
+        : ["Sem alergias alimentares"],
+      profession,
+      bodyFatPercentage,
+      metabolicRate,
+      goal: meta,
+    };
+
+    try {
+      await httpService.post("/datas", formattedData);
+      if (onSave) {
+        onSave(formattedData);
+      }
+      Alert.alert("Sucesso", "Dados salvos com sucesso!");
+      onClose();
+    } catch (error: any) {
+      console.error(
+        "Erro ao salvar dados:",
+        error.response?.data || error.message
+      );
+      Alert.alert("Erro", "Não foi possível salvar os dados.");
+    }
   };
 
   return (
@@ -40,91 +105,150 @@ const UserCard = ({ onClose }: UserCardProps) => {
           </Text>
           <View className="w-full max-w-[300px]">
             <InputField
-              placeholder="Percentual de Gordura (%)"
-              value={percentualGordura}
-              onChangeText={setPercentualGordura}
-              keyboardType="numeric"
+              placeholder="Data de Nascimento (dd/mm/aaaa)"
+              value={birthDate}
+              onChangeText={(text) => setBirthDate(formatDateInput(text))}
             />
-            <InputField
-              placeholder="Taxa Metabólica Basal"
-              value={taxaMetabolica}
-              onChangeText={setTaxaMetabolica}
-              keyboardType="numeric"
-            />
-            <InputField
-              placeholder="Data de Nascimento"
-              value={dataNascimento}
-              onChangeText={setDataNascimento}
-            />
+
             <InputField
               placeholder="Altura (m)"
-              value={altura}
-              onChangeText={setAltura}
+              value={height}
+              onChangeText={setHeight}
               keyboardType="numeric"
             />
+
             <InputField
               placeholder="Peso (kg)"
-              value={peso}
-              onChangeText={setPeso}
+              value={weight}
+              onChangeText={setWeight}
               keyboardType="numeric"
             />
+
             <InputField
               placeholder="Sua profissão"
-              value={profissao}
-              onChangeText={setProfissao}
+              value={profession}
+              onChangeText={setProfession}
             />
+
             <InputField
-              placeholder="Alergias se houver"
-              value={alergia}
-              onChangeText={setAlergia}
+              placeholder="Alergias (separadas por vírgula)"
+              value={allergy}
+              onChangeText={setAllergy}
             />
-            <View>
-              <TouchableOpacity
-                onPress={() => setDropdownVisible(!dropdownVisible)}
-                className="flex-row justify-between items-center"
-              >
-                <Text className="text-2xl text-[#F5F5F5] border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1">
-                  {meta || "O que planeja?"}
-                </Text>
-                <MaterialCommunityIcons
-                  name={dropdownVisible ? "chevron-up" : "chevron-down"}
-                  size={20}
-                  color="#F5F5F5"
-                />
-              </TouchableOpacity>
-              {dropdownVisible && (
-                <View className="border border-gray-300 rounded-md mt-1">
-                  {(
-                    [
-                      "Manter peso",
-                      "Perder peso",
-                      "Ganhar peso",
-                    ] as MetaOption[]
-                  ).map((option) => (
-                    <TouchableOpacity
-                      key={option}
-                      onPress={() => {
-                        setMeta(option);
-                        setDropdownVisible(false);
-                      }}
-                      className={`p-3 border-b last:border-b-0 ${
-                        meta === option ? "bg-[#1e1f22]" : ""
-                      }`}
-                    >
-                      <Text
-                        className={
-                          meta === option ? "text-white" : "text-white"
-                        }
-                      >
-                        {option}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
+
+            <TouchableOpacity
+              onPress={() => setDropdownGordura(!dropdownGordura)}
+              className="flex-row justify-between items-center"
+            >
+              <Text className="text-2xl text-[#F5F5F5] border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1">
+                {bodyFatPercentage}
+              </Text>
+              <MaterialCommunityIcons
+                name={dropdownGordura ? "chevron-up" : "chevron-down"}
+                size={20}
+                color="#F5F5F5"
+              />
+            </TouchableOpacity>
+            {dropdownGordura && (
+              <View className="border border-gray-300 rounded-md mt-1">
+                {(
+                  [
+                    "Alto percentual de massa muscular",
+                    "Equilíbrio entre massa muscular e gordura",
+                    "Alto percentual de gordura corporal",
+                    "Não sei",
+                  ] as BodyFatOption[]
+                ).map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => {
+                      setBodyFatPercentage(option);
+                      setDropdownGordura(false);
+                    }}
+                    className={`p-3 border-b last:border-b-0 ${
+                      bodyFatPercentage === option ? "bg-[#1e1f22]" : ""
+                    }`}
+                  >
+                    <Text className="text-white">{option}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            <TouchableOpacity
+              onPress={() => setDropdownMetabolismo(!dropdownMetabolismo)}
+              className="flex-row justify-between items-center"
+            >
+              <Text className="text-2xl text-[#F5F5F5] border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1">
+                {metabolicRate}
+              </Text>
+              <MaterialCommunityIcons
+                name={dropdownMetabolismo ? "chevron-up" : "chevron-down"}
+                size={20}
+                color="#F5F5F5"
+              />
+            </TouchableOpacity>
+            {dropdownMetabolismo && (
+              <View className="border border-gray-300 rounded-md mt-1">
+                {(
+                  [
+                    "Metabolismo acelerado (perco peso facilmente)",
+                    "Metabolismo moderado (peso estável com facilidade)",
+                    "Metabolismo mais lento (tenho tendência a ganhar peso)",
+                  ] as MetabolicRateOption[]
+                ).map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => {
+                      setMetabolicRate(option);
+                      setDropdownMetabolismo(false);
+                    }}
+                    className={`p-3 border-b last:border-b-0 ${
+                      metabolicRate === option ? "bg-[#1e1f22]" : ""
+                    }`}
+                  >
+                    <Text className="text-white">{option}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            <TouchableOpacity
+              onPress={() => setDropdownMeta(!dropdownMeta)}
+              className="flex-row justify-between items-center"
+            >
+              <Text className="text-2xl text-[#F5F5F5] border border-[#1e1f22] rounded-lg w-[300px] p-2 my-1">
+                {meta}
+              </Text>
+              <MaterialCommunityIcons
+                name={dropdownMeta ? "chevron-up" : "chevron-down"}
+                size={20}
+                color="#F5F5F5"
+              />
+            </TouchableOpacity>
+            {dropdownMeta && (
+              <View className="border border-gray-300 rounded-md mt-1">
+                {(
+                  ["Manter peso", "Perder peso", "Ganhar peso"] as MetaOption[]
+                ).map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => {
+                      setMeta(option);
+                      setDropdownMeta(false);
+                    }}
+                    className={`p-3 border-b last:border-b-0 ${
+                      meta === option ? "bg-[#1e1f22]" : ""
+                    }`}
+                  >
+                    <Text className="text-white">{option}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
             <TouchableOpacity onPress={handleSaveCardData}>
-              <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
+              <Text className="text-white bg-[#1e1f22] w-[300px] text-center p-2 my-3 rounded-lg text-2xl">
                 Salvar Dados do Card
               </Text>
             </TouchableOpacity>

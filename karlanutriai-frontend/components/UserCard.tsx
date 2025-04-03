@@ -35,7 +35,8 @@ const formatDateInput = (text: string) => {
 const parseFormattedDate = (formatted: string): Date | null => {
   const [day, month, year] = formatted.split("/");
   if (!day || !month || !year) return null;
-  return new Date(`${year}-${month}-${day}`);
+
+  return new Date(`${year}-${month}-${day}T12:00:00`);
 };
 
 const parseFloatFlexible = (value: string): number =>

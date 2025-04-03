@@ -29,7 +29,7 @@ const Chat = () => {
       setUserLogged(name || "Anônimo");
     });
 
-    ws.current = new WebSocket("ws://teuip:5000");
+    ws.current = new WebSocket("ws://192.168.0.12:5000");
 
     ws.current.onopen = () => {
       console.log("Conectado ao WebSocket");

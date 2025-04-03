@@ -73,19 +73,21 @@ const Login = () => {
       loadingIsTrue();
       const loginProductUrl = `auths/signin`;
       const response = await httpService.post(loginProductUrl, data);
-
       const token = response.data.token;
+      const name = response.data.name;
       await SecureStore.setItemAsync("userToken", token);
+      await SecureStore.setItemAsync("userName", name);
 
       loadingIsFalse();
       router.replace("/home");
     } catch (error: any) {
-      loadingIsFalse();
       if (error.response) {
         const errorMessage = error.response.data.error || "Erro desconhecido";
         setLoginError(errorMessage);
+        loadingIsFalse();
       } else {
         setLoginError("Erro de rede. Verifique sua conexão.");
+        loadingIsFalse();
       }
     }
   };

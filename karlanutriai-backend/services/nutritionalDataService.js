@@ -32,11 +32,6 @@ class nutritionalDataService {
             return 'Nao ha dados nutricionais para esse usuário';
         }
 
-        // // Verifica se o usuário logado é o dono dos dados | não vai ser necessário por já pesquisar pelo user ID
-        // if (nutritionalData.userId.toString() !== userId) {
-        //     throw new Error('Acesso negado. Você não tem permissão para excluir dados pertencentes a outro usuario.');
-        // }
-
         return await NutritionalData.findByIdAndUpdate(nutritionalData._id, data, { new: true });
     }
 
@@ -46,11 +41,6 @@ class nutritionalDataService {
         if (!nutritionalData) {
             return 'Nao ha dados nutricionais para esse usuário';
         }
-
-        // // Verifica se o usuário logado é o dono dos dados | não vai ser necessário por já pesquisar pelo user ID
-        // if (nutritionalData.userId.toString() !== userId) {
-        //     throw new Error('Acesso negado. Você não tem permissão para excluir dados pertencentes a outro usuario.');
-        // }
 
         return await NutritionalData.findByIdAndDelete(nutritionalData._id);
     }

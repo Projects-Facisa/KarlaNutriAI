@@ -1,5 +1,6 @@
 import NutritionalData from '../models/NutritionalData.js';
 import User from '../models/User.js';
+import { generateNutritionalDataPhrase } from '../utils/generatePhrases.js';
 
 class nutritionalDataService {
 
@@ -15,6 +16,7 @@ class nutritionalDataService {
             throw new Error('O usuario ja possui dados nutricionais cadastrados');
         }
 
+        data.nutritionalDataPhrase = generateNutritionalDataPhrase(data);
         const nutritionalData = new NutritionalData(data);
         return await nutritionalData.save();
     }

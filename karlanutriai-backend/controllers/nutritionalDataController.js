@@ -21,19 +21,6 @@ class NutritionalDataController {
         }
     }
 
-    async getById(req, res) {
-        try {
-            const {id} = req.params;
-            const nutritionalData = await nutritionalDataService.getNutritionalDataById(id);
-            if (!nutritionalData) {
-                res.status(404).json({message: 'Dados nutricionais nao encontrados com esse ID'});
-            }
-            res.status(200).json(nutritionalData);
-        } catch (error) {
-            res.status(500).json({error: error.message});
-        }
-    }
-
     async get(req, res) {
         try {
             const {userData} = req.headers;
@@ -42,6 +29,20 @@ class NutritionalDataController {
                 return res.status(404).json({message: 'Nao ha dados nutricionais cadastrados para esse usuario'});
             }
             res.status(200).json(nutritionalData);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
+    }
+
+    async getDataPhrase(req, res) {
+        try {
+            const {userData} = req.headers;
+            console.log(userData);
+            const nutritionalDataPhrase = await nutritionalDataService.getNutritionalDataPhrase(userData.id);
+            if (!nutritionalDataPhrase) {
+                return res.status(404).json({message: 'Sem Frase para dados Nutricionais do usuario'});
+            }
+            res.status(200).json(nutritionalDataPhrase);
         } catch (error) {
             res.status(500).json({error: error.message});
         }

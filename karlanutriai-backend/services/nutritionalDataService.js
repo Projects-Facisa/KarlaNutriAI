@@ -21,10 +21,6 @@ class nutritionalDataService {
         return await nutritionalData.save();
     }
 
-    async getNutritionalDataById(id) {
-        return await NutritionalData.findById(id);
-    }
-
     async getNutritionalDataByUserId(userId) {
         return await NutritionalData.findOne({userId: userId})
     }
@@ -57,6 +53,12 @@ class nutritionalDataService {
         // }
 
         return await NutritionalData.findByIdAndDelete(nutritionalData._id);
+    }
+
+    async getNutritionalDataPhrase(userId) {
+        console.log(userId);
+        const nutritionalData = await this.getNutritionalDataByUserId(userId);
+        return nutritionalData.nutritionalDataPhrase;
     }
 }
 

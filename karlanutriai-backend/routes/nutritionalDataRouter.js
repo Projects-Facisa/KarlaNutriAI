@@ -7,6 +7,6 @@ router.post("", NutritionalDataController.create);
 router.put("", NutritionalDataController.update);
 router.delete("", NutritionalDataController.delete);
 router.get("", NutritionalDataController.get);
-router.get("/:id", NutritionalDataController.getById)
+router.get("/phrase", NutritionalDataController.getDataPhrase);
 
 export default router;

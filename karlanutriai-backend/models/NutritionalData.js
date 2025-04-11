@@ -58,6 +58,9 @@ const nutritionalDataSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    nutritionalDataPhrase: {
+        type: String,
+    },
 });
 
 const nutritionalData = mongoose.model('NutritionalData', nutritionalDataSchema);

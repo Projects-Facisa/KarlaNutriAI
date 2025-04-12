@@ -17,3 +17,16 @@ export function generateNutritionalDataPhrase(data) {
 
     return phrase;
 }
+
+export function generateMealPhrase(meal) {
+    const { 
+        date,
+        type, 
+        description
+    } = meal;
+    
+    const formattedDate = date.toLocaleDateString('pt-BR');
+    const phrase = `${formattedDate} - ${type}: ${description}.`;
+
+    return phrase;
+}

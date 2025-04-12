@@ -1,9 +1,9 @@
 import Meal from '../models/Meal.js';
 import User from '../models/User.js';
+import mealPhrasesService from './mealPhrasesService.js';
+import { generateMealPhrase } from '../utils/generatePhrases.js';
 
 class mealService {
-
-
     async createMeal(data) {
         const user = await User.findById(data.userId);
         if (!user) {
@@ -11,7 +11,12 @@ class mealService {
         }
 
         const meal = new Meal(data);
-        return await meal.save();
+        const savedMeal = await meal.save();
+
+        const mealPhrase = generateMealPhrase(savedMeal);
+        await mealPhrasesService.addMealPhrase(user, mealPhrase);
+
+        return savedMeal;
     }
 
     async getMealById(id) {
@@ -47,7 +52,11 @@ class mealService {
         }
 
         return await Meal.findByIdAndDelete(meal._id);
-    
+    }
+
+    async getMealsPhrasesByUserId(userId) {
+        const mealPhrases = await mealPhrasesService.getMealPhrases(userId);
+        return mealPhrases;
     }
 }
 

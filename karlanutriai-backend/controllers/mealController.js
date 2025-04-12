@@ -47,6 +47,20 @@ class MealController {
         }
     }
 
+    async getMealsPhrasesByUserId(req, res) {
+        try {
+            const {userData} = req.headers;
+
+            const mealPhrases = await mealService.getMealsPhrasesByUserId(userData.id);
+            if (mealPhrases.length === 0) {
+                return res.status(404).json({message: 'Nao ha frases de refeicoes para este usuario!'});
+            }
+            return res.status(200).json(mealPhrases);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
+    }
+
     async update(req, res) {
         try {
             const data = req.body;

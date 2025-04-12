@@ -3,6 +3,7 @@ import MealController from "../controllers/mealController.js";
 
 const router = new express.Router();
 
+router.get("/phrases", MealController.getMealsPhrasesByUserId);
 router.get("/:id", MealController.getById);
 router.get("", MealController.getAllMealsByUser);
 router.post("", MealController.create);

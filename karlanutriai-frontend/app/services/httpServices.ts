@@ -1,8 +1,12 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
+//COLOQUE AQUI SEU IP ATUAL
+//EXEMPLO "10.5.11.205"
+export const localURL = ""
+
 const api = axios.create({
-  baseURL: "",
+  baseURL: `http://${localURL}:5000/`,
 });
 
 api.interceptors.request.use(

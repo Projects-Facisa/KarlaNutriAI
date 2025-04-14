@@ -12,6 +12,7 @@ import {
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "@react-navigation/native";
 import Balloon from "@/components/ui/Balloon";
+import { localURL } from "../services/httpServices";
 
 type Message = {
   text: string;
@@ -32,7 +33,7 @@ const Chat = () => {
       setUserLogged(name || "Anônimo");
     });
 
-    ws.current = new WebSocket("ws://192.168.0.12:5000");
+    ws.current = new WebSocket(`ws://${localURL}:5000/`);
 
     ws.current.onopen = () => {
       console.log("Conectado ao WebSocket");

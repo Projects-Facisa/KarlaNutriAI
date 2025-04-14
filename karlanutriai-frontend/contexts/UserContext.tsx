@@ -11,6 +11,7 @@ type UserProfile = {
 type UserContextType = {
   user: UserProfile | null;
   fetchUser: () => Promise<void>;
+  fetchNutritionalData: () => Promise<boolean>;
 };
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -29,12 +30,22 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const fetchNutritionalData = async (): Promise<boolean> => {
+    try {
+      const response = await httpService.get("/auths/displayHome");
+      return response.data.display;
+    } catch (error) {
+      console.error("Erro ao buscar dados nutricionais:", error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     fetchUser();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, fetchUser }}>
+    <UserContext.Provider value={{ user, fetchUser, fetchNutritionalData }}>
       {children}
     </UserContext.Provider>
   );

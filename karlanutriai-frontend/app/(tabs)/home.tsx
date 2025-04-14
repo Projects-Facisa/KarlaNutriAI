@@ -1,11 +1,6 @@
+// Home.tsx
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import {
   Card,
   CardHeader,
@@ -13,12 +8,7 @@ import {
   CardDescription,
 } from "@/components/Card";
 import TouchButton from "@/components/ui/TouchButton";
-import {
-  useMealContext,
-  Meal,
-  MealTypes,
-  MealDays,
-} from "@/contexts/MealContext";
+import { useMealContext, MealTypes, MealDays } from "@/contexts/MealContext";
 import "../../global.css";
 import { useLoader } from "@/contexts/UseLoadingContext";
 import FullScreenLoader from "@/components/FullScreenLoader";
@@ -45,15 +35,23 @@ const getPortugueseDay = (dateInput: string | Date): MealDays => {
 const Home = () => {
   const { meals } = useMealContext();
   const [expandedDay, setExpandedDay] = useState<MealDays | "">("");
-  const { loading, loadingIsTrue, loadingIsFalse } = useLoader();
-  const { user } = useUser();
+  const { loading } = useLoader();
+  const { user, fetchNutritionalData } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (user && !user.nutritionalDataId) {
-      router.push("/userCard");
+    if (user) {
+      fetchNutritionalData().then((hasData) => {
+        if (!hasData) {
+          router.push("/userCard");
+        }
+      });
     }
-  }, [user]);
+  }, [user, fetchNutritionalData, router]);
+
+  if (loading || !user) {
+    return <FullScreenLoader visible={true} />;
+  }
 
   const handleDayButtonPress = (day: MealDays) => {
     setExpandedDay(expandedDay === day ? "" : day);
@@ -75,9 +73,7 @@ const Home = () => {
     "Domingo",
   ];
 
-  return loading ? (
-    <FullScreenLoader visible={true} />
-  ) : (
+  return (
     <View className="flex-1 items-center bg-[#313338]">
       <ScrollView
         contentContainerStyle={{

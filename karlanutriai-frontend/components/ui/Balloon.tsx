@@ -27,6 +27,7 @@ const Balloon = ({ message, currentUser }: Props) => {
         style={[
           styles.balloon,
           isMine ? styles.myBalloon : styles.otherBalloon,
+          message.text === "..." && { opacity: 0.6 },
         ]}
       >
         <Text style={isMine ? styles.myText : styles.otherText}>

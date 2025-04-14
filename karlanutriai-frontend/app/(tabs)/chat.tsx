@@ -10,18 +10,21 @@ import {
   TouchableOpacity,
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import { useNavigation } from "@react-navigation/native";
 import Balloon from "@/components/ui/Balloon";
 
 type Message = {
   text: string;
   sentBy: string;
+  temp?: boolean;
 };
 
 const Chat = () => {
   const [userLogged, setUserLogged] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
-
+  const [isThinking, setIsThinking] = useState(false);
+  const navigation = useNavigation();
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -36,8 +39,11 @@ const Chat = () => {
     };
 
     ws.current.onmessage = ({ data }) => {
-      const msg = JSON.parse(data);
-      setMessages((prev) => [...prev, msg]);
+      const response = JSON.parse(data);
+
+      setMessages((prev) => prev.map((msg) => (msg.temp ? response : msg)));
+
+      setIsThinking(false);
     };
 
     return () => {
@@ -48,12 +54,19 @@ const Chat = () => {
   const sendMessage = () => {
     if (!message.trim()) return;
 
-    const msg = JSON.stringify({
+    const msg = {
       text: message,
       sentBy: userLogged,
-    });
+    };
 
-    ws.current?.send(msg);
+    setMessages((prev) => [
+      ...prev,
+      msg,
+      { text: "...", sentBy: "Karla Nutri AI", temp: true },
+    ]);
+
+    setIsThinking(true);
+    ws.current?.send(JSON.stringify(msg));
     setMessage("");
   };
 
@@ -62,6 +75,13 @@ const Chat = () => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <Text style={styles.backButtonText}>←</Text>
+      </TouchableOpacity>
+
       <FlatList
         style={styles.chat}
         data={messages}
@@ -91,6 +111,16 @@ export default Chat;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#313338", padding: 16 },
+  backButton: {
+    marginBottom: 12,
+    padding: 6,
+    borderRadius: 6,
+    alignSelf: "flex-start",
+  },
+  backButtonText: {
+    color: "#fff",
+    fontSize: 22,
+  },
   chat: { flex: 1 },
   footer: {
     flexDirection: "row",

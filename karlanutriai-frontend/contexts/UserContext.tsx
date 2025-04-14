@@ -5,6 +5,7 @@ type UserProfile = {
   name: string;
   email: string;
   tel: string;
+  nutritionalDataId?: string;
 };
 
 type UserContextType = {

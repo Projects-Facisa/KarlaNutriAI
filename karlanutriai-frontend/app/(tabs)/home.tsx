@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from "react"; // Adicionar useEffect
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import {
   Card,
   CardHeader,
@@ -16,6 +22,8 @@ import {
 import "../../global.css";
 import { useLoader } from "@/contexts/UseLoadingContext";
 import FullScreenLoader from "@/components/FullScreenLoader";
+import { useUser } from "@/contexts/UserContext";
+import { useRouter } from "expo-router";
 
 const mealOrder: MealTypes[] = ["Cafe da manha", "Almoco", "Lanche", "Janta"];
 
@@ -38,8 +46,14 @@ const Home = () => {
   const { meals } = useMealContext();
   const [expandedDay, setExpandedDay] = useState<MealDays | "">("");
   const { loading, loadingIsTrue, loadingIsFalse } = useLoader();
+  const { user } = useUser();
+  const router = useRouter();
 
-  useEffect(() => {}, [meals]);
+  useEffect(() => {
+    if (user && !user.nutritionalDataId) {
+      router.push("/userCard");
+    }
+  }, [user]);
 
   const handleDayButtonPress = (day: MealDays) => {
     setExpandedDay(expandedDay === day ? "" : day);

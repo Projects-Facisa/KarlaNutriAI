@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  Platform,
+  BackHandler,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputField from "@/components/ui/InputField";
 import httpService from "@/app/services/httpServices";
 import { useRouter } from "expo-router";
 import "@/global.css";
+import { useUser } from "@/contexts/UserContext";
 
 type MetaOption = "Manter peso" | "Perder peso" | "Ganhar peso";
 type BodyFatOption =
@@ -39,6 +48,7 @@ const parseFloatFlexible = (value: string): number =>
 
 export default function UserCard() {
   const router = useRouter();
+  const { fetchUser } = useUser();
   const [dropdownMeta, setDropdownMeta] = useState(false);
   const [dropdownGordura, setDropdownGordura] = useState(false);
   const [dropdownMetabolismo, setDropdownMetabolismo] = useState(false);
@@ -91,6 +101,16 @@ export default function UserCard() {
     fetchNutritionalData();
   }, []);
 
+  useEffect(() => {
+    if (!hasData && Platform.OS === "android") {
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => true
+      );
+      return () => backHandler.remove();
+    }
+  }, [hasData]);
+
   const handleSaveCardData = async () => {
     const formattedData = {
       birthDate: parseFormattedDate(birthDate),
@@ -110,7 +130,9 @@ export default function UserCard() {
         await httpService.put("/datas", formattedData);
       } else {
         await httpService.post("/datas", formattedData);
+        setHasData(true);
       }
+      await fetchUser();
       Alert.alert(
         "Sucesso",
         hasData ? "Dados atualizados!" : "Dados salvos com sucesso!"
@@ -146,6 +168,7 @@ export default function UserCard() {
               setBodyFatPercentage("Alto percentual de massa muscular");
               setMetabolicRate("Metabolismo acelerado (perco peso facilmente)");
               setMeta("Manter peso");
+              await fetchUser();
               Alert.alert("Sucesso", "Dados apagados com sucesso!");
               router.back();
             } catch (error: any) {
@@ -319,12 +342,14 @@ export default function UserCard() {
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity
-              onPress={() => router.back()}
-              className="p-4 items-center"
-            >
-              <Text className="text-[#F5F5F5]">Voltar</Text>
-            </TouchableOpacity>
+            {hasData && (
+              <TouchableOpacity
+                onPress={() => router.back()}
+                className="p-4 items-center"
+              >
+                <Text className="text-[#F5F5F5]">Voltar</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </ScrollView>

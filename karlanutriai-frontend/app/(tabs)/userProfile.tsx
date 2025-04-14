@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import InputField from "@/components/ui/InputField";
 import "@/global.css";
-import httpService from "@/app/services/httpServices";
+import {httpService} from "@/app/services/httpServices";
 import { useUser } from "@/contexts/UserContext";
 import { useLoader } from "@/contexts/UseLoadingContext";
 import { useRouter } from "expo-router";

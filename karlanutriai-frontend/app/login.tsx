@@ -6,7 +6,7 @@ import InputField from "../components/ui/InputField";
 import TouchButton from "../components/ui/TouchButton";
 import AuthButton from "../components/ui/AuthButton";
 import "../global.css";
-import httpService from "./services/httpServices";
+import {httpService} from "./services/httpServices";
 import * as SecureStore from "expo-secure-store";
 import { useLoader } from "@/contexts/UseLoadingContext";
 const Login = () => {

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import httpService from "@/app/services/httpServices";
+import {httpService} from "@/app/services/httpServices";
 
 type UserProfile = {
   name: string;

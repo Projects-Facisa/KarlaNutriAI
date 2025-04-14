@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputField from "@/components/ui/InputField";
-import httpService from "@/app/services/httpServices";
+import { httpService } from "@/app/services/httpServices";
 import { useRouter } from "expo-router";
 import "@/global.css";
 import { useUser } from "@/contexts/UserContext";

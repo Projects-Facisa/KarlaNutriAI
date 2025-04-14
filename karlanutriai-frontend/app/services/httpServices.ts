@@ -20,11 +20,10 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-const httpService = {
+export const httpService = {
   get: (path: string) => api.get(path),
   post: (path: string, json: any) => api.post(path, json),
   put: (path: string, json: any) => api.put(path, json),
   delete: (path: string) => api.delete(path),
 };
 
-export default httpService;

@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import InputField from "../components/ui/InputField";
 import TouchButton from "../components/ui/TouchButton";
 import "../global.css";
-import httpService from "./services/httpServices";
+import {httpService} from "./services/httpServices";
 
 type InputState = {
   value: string;

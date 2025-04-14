@@ -33,7 +33,7 @@ const Chat = () => {
       setUserLogged(name || "Anônimo");
     });
 
-    ws.current = new WebSocket(`ws://${localURL}:5000/`);
+    ws.current = new WebSocket(`ws://${localURL}:5000`);
 
     ws.current.onopen = () => {
       console.log("Conectado ao WebSocket");

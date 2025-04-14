@@ -1,4 +1,3 @@
-// layout.tsx
 import { Redirect, Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
@@ -29,6 +28,7 @@ export default function TabLayout() {
     <UserProvider>
       <MealProvider>
         <Tabs
+          backBehavior="history"
           screenOptions={{
             headerShown: false,
             tabBarShowLabel: false,
@@ -87,6 +87,27 @@ export default function TabLayout() {
               tabBarIcon: ({ color }) => (
                 <MaterialIcons name="settings" size={30} color={color} />
               ),
+            }}
+          />
+          <Tabs.Screen
+            name="userCard"
+            options={{
+              href: null,
+              tabBarStyle: { display: "none" },
+            }}
+          />
+          <Tabs.Screen
+            name="userProfile"
+            options={{
+              href: null,
+              tabBarStyle: { display: "none" },
+            }}
+          />
+          <Tabs.Screen
+            name="contactForm"
+            options={{
+              href: null,
+              tabBarStyle: { display: "none" },
             }}
           />
         </Tabs>

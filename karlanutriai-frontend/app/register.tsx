@@ -141,7 +141,7 @@ const Register = () => {
     try {
       const registerProductUrl = `/users`;
       await httpService.post(registerProductUrl, data);
-      router.replace("/login");
+      replacePath("login");
     } catch (error: any) {
       if (error.response) {
         // Se a resposta do backend for um erro set o loginError com a mensagem de erro

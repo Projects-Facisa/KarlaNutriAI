@@ -1,15 +1,12 @@
+// app/contact.tsx
 import React, { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import InputField from "@/components/ui/InputField";
 import TouchButton from "@/components/ui/TouchButton";
-import "../global.css";
+import "@/global.css";
 
-type ContactFormProps = {
-  onClose: () => void;
-};
-
-const ContactForm = ({ onClose }: ContactFormProps) => {
+export default function ContactForm() {
   const router = useRouter();
   const [tipoProblema, setTipoProblema] = useState<"aplicativo" | "conta">(
     "aplicativo"
@@ -23,8 +20,8 @@ const ContactForm = ({ onClose }: ContactFormProps) => {
     }
     Alert.alert("Sucesso", "Formulário enviado com sucesso!");
     setDescricao("");
-    onClose();
-    // router.replace("home");
+    // Após o envio, volta para a tela anterior
+    router.back();
   };
 
   return (
@@ -64,12 +61,13 @@ const ContactForm = ({ onClose }: ContactFormProps) => {
           numberOfLines={4}
         />
         <TouchButton onPress={handleSubmit} text="Enviar" />
-        <TouchableOpacity onPress={onClose} className="p-4 items-center">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          className="p-4 items-center"
+        >
           <Text className="text-[#F5F5F5]">Voltar</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-};
-
-export default ContactForm;
+}

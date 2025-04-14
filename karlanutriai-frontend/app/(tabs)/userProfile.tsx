@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import InputField from "@/components/ui/InputField";
-import "../global.css";
+import "@/global.css";
 import httpService from "@/app/services/httpServices";
 import { useUser } from "@/contexts/UserContext";
 import { useLoader } from "@/contexts/UseLoadingContext";
+import { useRouter } from "expo-router";
 
 const regexEmail = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 const regexTelefone = /^\(?[1-9]{2}\)?\s?[9]{0,1}[0-9]{4}-?[0-9]{4}$/;
@@ -23,7 +24,8 @@ const formatTelefone = (value: string): string => {
   }
 };
 
-const UserProfile = ({ onClose }: { onClose: () => void }) => {
+export default function UserProfile() {
+  const router = useRouter();
   const { loading, loadingIsTrue, loadingIsFalse } = useLoader();
   const { user, fetchUser } = useUser();
   const [nome, setNome] = useState({ value: "", dirty: false });
@@ -62,7 +64,7 @@ const UserProfile = ({ onClose }: { onClose: () => void }) => {
       setTelefone((prev) => ({ value: formattedValue, dirty: prev.dirty }));
       if (!regexTelefone.test(formattedValue)) {
         setProfileError("Tente por o formato (XX) (9XXXX-XXXX)");
-      } 
+      }
     } else if (field === "senha") {
       setSenha((prev) => ({ value, dirty: prev.dirty }));
     }
@@ -184,7 +186,10 @@ const UserProfile = ({ onClose }: { onClose: () => void }) => {
                   Editar Perfil
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onClose} className="p-4 items-center">
+              <TouchableOpacity
+                onPress={() => router.back()}
+                className="p-4 items-center"
+              >
                 <Text className="text-[#F5F5F5]">Voltar</Text>
               </TouchableOpacity>
             </View>
@@ -193,6 +198,4 @@ const UserProfile = ({ onClose }: { onClose: () => void }) => {
       </ScrollView>
     </View>
   );
-};
-
-export default UserProfile;
+}

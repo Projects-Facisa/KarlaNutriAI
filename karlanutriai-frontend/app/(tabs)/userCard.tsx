@@ -3,7 +3,8 @@ import { ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputField from "@/components/ui/InputField";
 import httpService from "@/app/services/httpServices";
-import "../global.css";
+import { useRouter } from "expo-router";
+import "@/global.css";
 
 type MetaOption = "Manter peso" | "Perder peso" | "Ganhar peso";
 type BodyFatOption =
@@ -15,11 +16,6 @@ type MetabolicRateOption =
   | "Metabolismo acelerado (perco peso facilmente)"
   | "Metabolismo moderado (peso estável com facilidade)"
   | "Metabolismo mais lento (tenho tendência a ganhar peso)";
-
-type UserCardProps = {
-  onClose: () => void;
-  onSave?: (data: any) => void;
-};
 
 const formatDateInput = (text: string) => {
   const cleaned = text.replace(/\D/g, "");
@@ -35,14 +31,14 @@ const formatDateInput = (text: string) => {
 const parseFormattedDate = (formatted: string): Date | null => {
   const [day, month, year] = formatted.split("/");
   if (!day || !month || !year) return null;
-
   return new Date(`${year}-${month}-${day}T12:00:00`);
 };
 
 const parseFloatFlexible = (value: string): number =>
   parseFloat(value.replace(",", "."));
 
-const UserCard = ({ onClose, onSave }: UserCardProps) => {
+export default function UserCard() {
+  const router = useRouter();
   const [dropdownMeta, setDropdownMeta] = useState(false);
   const [dropdownGordura, setDropdownGordura] = useState(false);
   const [dropdownMetabolismo, setDropdownMetabolismo] = useState(false);
@@ -82,7 +78,6 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
           const formattedBirthDate = birth
             .toLocaleDateString("pt-BR")
             .replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$1/$2/$3");
-
           setBirthDate(formattedBirthDate);
         }
       } catch (error: any) {
@@ -116,14 +111,11 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
       } else {
         await httpService.post("/datas", formattedData);
       }
-
-      if (onSave) onSave(formattedData);
-
       Alert.alert(
         "Sucesso",
         hasData ? "Dados atualizados!" : "Dados salvos com sucesso!"
       );
-      onClose();
+      router.back();
     } catch (error: any) {
       console.error(
         "Erro ao salvar dados:",
@@ -155,6 +147,7 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
               setMetabolicRate("Metabolismo acelerado (perco peso facilmente)");
               setMeta("Manter peso");
               Alert.alert("Sucesso", "Dados apagados com sucesso!");
+              router.back();
             } catch (error: any) {
               console.error("Erro ao apagar dados:", error.message);
               Alert.alert("Erro", "Erro ao apagar dados.");
@@ -326,7 +319,10 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity onPress={onClose} className="p-4 items-center">
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="p-4 items-center"
+            >
               <Text className="text-[#F5F5F5]">Voltar</Text>
             </TouchableOpacity>
           </View>
@@ -334,6 +330,4 @@ const UserCard = ({ onClose, onSave }: UserCardProps) => {
       </ScrollView>
     </View>
   );
-};
-
-export default UserCard;
+}

@@ -79,7 +79,7 @@ const Login = () => {
       await SecureStore.setItemAsync("userName", name);
 
       loadingIsFalse();
-      router.replace("/home");
+      replacePath("home");
     } catch (error: any) {
       if (error.response) {
         const errorMessage = error.response.data.error || "Erro desconhecido";

@@ -1,7 +1,7 @@
-// app/contact.tsx
 import React, { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
+import { httpService } from "@/app/services/httpServices";
 import InputField from "@/components/ui/InputField";
 import TouchButton from "@/components/ui/TouchButton";
 import "@/global.css";
@@ -18,10 +18,22 @@ export default function ContactForm() {
       Alert.alert("Atenção", "Informe a descrição do problema.");
       return;
     }
-    Alert.alert("Sucesso", "Formulário enviado com sucesso!");
-    setDescricao("");
-    // Após o envio, volta para a tela anterior
-    router.back();
+    try {
+      await httpService.post("mails", {
+        type: tipoProblema,
+        description: descricao,
+      });
+      Alert.alert("Sucesso", "Formulário enviado com sucesso!");
+      setDescricao("");
+      router.back();
+    } catch (error: any) {
+      Alert.alert(
+        "Erro",
+        error.response?.data?.error ||
+          error.message ||
+          "Erro ao enviar o formulário"
+      );
+    }
   };
 
   return (

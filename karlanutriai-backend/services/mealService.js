@@ -55,7 +55,7 @@ class mealService {
     }
 
     async getMealsPhrasesByUserId(userId) {
-        const mealPhrases = await mealPhrasesService.getMealPhrases(userId);
+        const mealPhrases = await mealPhrasesService.getMealPhrasesByUserId(userId);
         return mealPhrases;
     }
 }

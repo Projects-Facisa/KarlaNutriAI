@@ -25,7 +25,7 @@ class mealPhrasesService {
         }
     }
     
-    async getMealPhrases(userId) {
+    async getMealPhrasesByUserId(userId) {
         const doc = await MealPhrases.findOne({ userId });
         return doc ? doc.phrases : [];
     }

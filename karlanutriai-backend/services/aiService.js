@@ -1,4 +1,6 @@
 import {GoogleGenerativeAI} from "@google/generative-ai"
+import nutritionalDataService from "./nutritionalDataService.js"
+import mealPhrasesService from "./mealPhrasesService.js"
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -8,12 +10,18 @@ const model = genAi.getGenerativeModel({
 });
 
 const aiService = {
-    prompt: async (question) => {
+    prompt: async (userId, question) => {
+        const data = await aiService.preparePromptData(userId)
+
+        const { nutritionalDataPhrase, mealPhrases } = data
+
+        const context = `A partir de agora você é Karla Nutri AI, nutricionista focada em ganho, perda e equilíbrio de massa. Considere: ${nutritionalDataPhrase} e ${mealPhrases}. Responda: ${question}`;
+  
         const p = {
             "contents": [
                 {
                     "parts": [
-                        { "text": question }
+                        { "text": context }
                     ]
                 }
             ]
@@ -21,6 +29,21 @@ const aiService = {
         const result = await model.generateContent(p,  {timeout: 60000})
         return result.response
     },
+
+    preparePromptData: async (userId) => {
+        try {
+            const nutritionalDataPhrase = await nutritionalDataService.getNutritionalDataPhrase(userId);
+            const mealPhrases = await mealPhrasesService.getMealPhrasesByUserId(userId);
+
+            return {
+                nutritionalDataPhrase,
+                mealPhrases
+            };
+
+        } catch (error) {
+            return error
+        }
+    }
 }
 
 export default aiService;

@@ -75,8 +75,10 @@ const Login = () => {
       const response = await httpService.post(loginProductUrl, data);
       const token = response.data.token;
       const name = response.data.name;
+      const id = response.data.id;
       await SecureStore.setItemAsync("userToken", token);
       await SecureStore.setItemAsync("userName", name);
+      await SecureStore.setItemAsync("userId", id);
 
       loadingIsFalse();
       replacePath("home");

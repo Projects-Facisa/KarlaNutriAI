@@ -40,6 +40,7 @@ class AuthController {
         message: "SignIn Realizado com Sucesso",
         token: token,
         name: user.name,
+        id: user._id,
       });
     } catch (error) {
       return res.status(400).json({ error: "Authorization header inválido" });

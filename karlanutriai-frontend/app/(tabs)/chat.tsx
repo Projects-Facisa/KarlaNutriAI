@@ -22,6 +22,7 @@ type Message = {
 
 const Chat = () => {
   const [userLogged, setUserLogged] = useState("");
+  const [userId, setUserId] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
   const [isThinking, setIsThinking] = useState(false);
@@ -31,6 +32,11 @@ const Chat = () => {
   useEffect(() => {
     SecureStore.getItemAsync("userName").then((name) => {
       setUserLogged(name || "Anônimo");
+    });
+    SecureStore.getItemAsync("userId").then((id) => {
+      if (id) {
+        setUserId(id);
+      }
     });
 
     ws.current = new WebSocket(`ws://${localURL}:5000`);
@@ -56,6 +62,7 @@ const Chat = () => {
     if (!message.trim()) return;
 
     const msg = {
+      id: userId,
       text: message,
       sentBy: userLogged,
     };

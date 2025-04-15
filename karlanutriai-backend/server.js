@@ -25,14 +25,15 @@ wss.on("connection", (client) => {
       console.log("Recebi mensagem do usuário:", data);
 
       const msg = {
+        id: data.id,
         text: data.text,
         sentBy: data.sentBy,
       };
 
-      const result = await aiService.prompt(msg.text);
+      const result = await aiService.prompt(msg.id, msg.text);
 
       const response = {
-        text: await result.text(),
+        text: result.text(),
         sentBy: "Karla Nutri AI",
       };
 

@@ -29,8 +29,6 @@ const Welcome = () => {
           onPress={() => replacePath("register")}
           text="Registrar-se"
         />
-        <TouchButton onPress={() => replacePath("home")} text="Home" />
-        {/* PARA TESTES */}
       </View>
     </View>
   );

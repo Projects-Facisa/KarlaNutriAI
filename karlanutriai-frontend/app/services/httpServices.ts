@@ -20,10 +20,19 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response && error.response.status === 401) {
+      await SecureStore.deleteItemAsync("userToken");
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const httpService = {
   get: (path: string) => api.get(path),
   post: (path: string, json: any) => api.post(path, json),
   put: (path: string, json: any) => api.put(path, json),
   delete: (path: string) => api.delete(path),
 };
-

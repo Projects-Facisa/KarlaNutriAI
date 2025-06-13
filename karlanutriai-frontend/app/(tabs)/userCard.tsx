@@ -335,14 +335,6 @@ export default function UserCard() {
             </TouchableOpacity>
 
             {hasData && (
-              <TouchableOpacity onPress={handleDeleteCardData}>
-                <Text className="text-white bg-red-600 w-[300px] text-center p-2 my-1 rounded-lg text-2xl">
-                  Apagar Dados do Card
-                </Text>
-              </TouchableOpacity>
-            )}
-
-            {hasData && (
               <TouchableOpacity
                 onPress={() => router.back()}
                 className="p-4 items-center"

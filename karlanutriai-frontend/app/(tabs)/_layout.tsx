@@ -1,5 +1,5 @@
+import React from "react";
 import { Redirect, Tabs } from "expo-router";
-import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
@@ -7,7 +7,7 @@ import NavigationButton from "@/components/ui/NavigationButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import FullScreenLoader from "@/components/FullScreenLoader";
-import useAuthToken from "../../hooks/useAuthToken";
+import useAuthToken from "@/hooks/useAuthToken";
 
 import { MealProvider } from "@/contexts/MealContext";
 import { UserProvider } from "@/contexts/UserContext";
@@ -91,24 +91,23 @@ export default function TabLayout() {
           />
           <Tabs.Screen
             name="userCard"
-            options={{
-              href: null,
-              tabBarStyle: { display: "none" },
-            }}
+            options={{ href: null, tabBarStyle: { display: "none" } }}
           />
           <Tabs.Screen
             name="userProfile"
-            options={{
-              href: null,
-              tabBarStyle: { display: "none" },
-            }}
+            options={{ href: null, tabBarStyle: { display: "none" } }}
           />
           <Tabs.Screen
             name="contactForm"
-            options={{
-              href: null,
-              tabBarStyle: { display: "none" },
-            }}
+            options={{ href: null, tabBarStyle: { display: "none" } }}
+          />
+          <Tabs.Screen
+            name="calendar"
+            options={{ href: null, tabBarStyle: { display: "none" } }}
+          />
+          <Tabs.Screen
+            name="recipes"
+            options={{ href: null, tabBarStyle: { display: "none" } }}
           />
         </Tabs>
       </MealProvider>

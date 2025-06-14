@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRecipes, Recipe } from "@/hooks/useRecipes";
 import { useRouter } from "expo-router";
 
@@ -16,11 +17,8 @@ export default function Recipes() {
   const router = useRouter();
 
   const handleSearch = () => {
-    if (query.trim()) {
-      search(query);
-    } else {
-      fetchRandomThree();
-    }
+    if (query.trim()) search(query);
+    else fetchRandomThree();
   };
 
   const openDetail = (recipe: Recipe) => {
@@ -29,7 +27,6 @@ export default function Recipes() {
 
   return (
     <View className="flex-1 w-full bg-[#313338] p-4">
-      {/* Barra de pesquisa */}
       <View className="flex-row mb-4">
         <TextInput
           placeholder="Pesquisar receita..."
@@ -41,39 +38,37 @@ export default function Recipes() {
         />
         <TouchableOpacity
           onPress={handleSearch}
-          className="bg-[#1e1f22] px-4 py-2 rounded-r-lg justify-center"
+          className="bg-[#1e1f22] px-4 py-2 rounded-r-lg justify-center items-center"
         >
-          <Text className="text-white font-semibold">OK</Text>
+          <MaterialIcons name="search" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      {/* Estado de carregamento */}
       {loading && (
         <Text className="text-white text-center">Carregando receitas...</Text>
       )}
 
-      {/* Lista de receitas */}
       {!loading && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {recipes.map((r: Recipe) => (
             <View
               key={r.id}
-              className="w-60 mr-4 bg-[#1e1f22] rounded-lg overflow-hidden"
+              className="w-60 mr-4 bg-[#2b2d31] rounded-lg overflow-hidden"
             >
               <Image
                 source={{ uri: r.link_imagem }}
-                className="w-full h-32"
+                className="w-full h-40"
                 resizeMode="cover"
               />
-              <View className="p-2">
-                <Text className="text-white font-bold text-lg">
+              <View className="p-1">
+                <Text className="text-white font-bold text-base">
                   {r.receita}
                 </Text>
                 <TouchableOpacity
                   onPress={() => openDetail(r)}
-                  className="mt-2 bg-[#1e1f22] py-1 rounded-lg"
+                  className="mt-1 bg-[#1e1f22] py-1 rounded-lg"
                 >
-                  <Text className="text-center text-white font-semibold">
+                  <Text className="text-center text-white font-semibold text-sm">
                     Ver Receita
                   </Text>
                 </TouchableOpacity>

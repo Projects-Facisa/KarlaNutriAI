@@ -54,9 +54,9 @@ export default function TabLayout() {
             }}
           />
           <Tabs.Screen
-            name="meal"
+            name="calendar"
             options={{
-              title: "Meal",
+              title: "Calendar",
               tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons
                   name="food-fork-drink"
@@ -102,11 +102,7 @@ export default function TabLayout() {
             options={{ href: null, tabBarStyle: { display: "none" } }}
           />
           <Tabs.Screen
-            name="calendar"
-            options={{ href: null, tabBarStyle: { display: "none" } }}
-          />
-          <Tabs.Screen
-            name="recipes"
+            name="meal"
             options={{ href: null, tabBarStyle: { display: "none" } }}
           />
         </Tabs>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export interface Recipe {
   id: number;
@@ -20,18 +20,14 @@ export function useRecipes() {
     const res = await fetch(`${BASE}/todas`);
     const data: Recipe[] = await res.json();
     setLoading(false);
+    setRecipes(data);
     return data;
-  };
-
-  const fetchRandomThree = async () => {
-    const all = await fetchAll();
-    const sample = all.sort(() => 0.5 - Math.random()).slice(0, 3);
-    setRecipes(sample);
   };
 
   const search = async (query: string) => {
     setLoading(true);
-    const all = await fetchAll();
+    const res = await fetch(`${BASE}/todas`);
+    const all: Recipe[] = await res.json();
     const filtered = all.filter(
       (r) =>
         r.receita.toLowerCase().includes(query.toLowerCase()) ||
@@ -41,9 +37,5 @@ export function useRecipes() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchRandomThree();
-  }, []);
-
-  return { recipes, loading, fetchRandomThree, search, fetchAll };
+  return { recipes, loading, search, fetchAll };
 }

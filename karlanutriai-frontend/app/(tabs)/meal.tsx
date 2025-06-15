@@ -37,7 +37,7 @@ const getDateFromMealDay = (mealDay: MealDays): Date => {
   return result;
 };
 
-const MealView = () => {
+export default function MealView() {
   const { meals, addMeal, updateMeal, deleteMeal } = useMealContext();
   const [modalVisible, setModalVisible] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
@@ -160,7 +160,7 @@ const MealView = () => {
   return (
     <View className="flex-1 bg-[#313338]">
       <View className="flex-row justify-around p-4">
-        <TouchButton onPress={openModalForCreate} text="Criar"></TouchButton>
+        <TouchButton onPress={openModalForCreate} text="Criar" />
       </View>
       <ScrollView className="flex-1 p-4">
         {groupedMeals.map((group, index) => (
@@ -302,6 +302,4 @@ const MealView = () => {
       </Modal>
     </View>
   );
-};
-
-export default MealView;
+}
